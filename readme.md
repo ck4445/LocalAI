@@ -1,4 +1,3 @@
-Disclaimer: This was fully coded by AI with help from a human to test it. While 99% of the time ai generated code is not safe for production, this app has no dangerous parts and is all local besides a few ollama download calls(to download ggufs) meaning it therefore is safe for production.
 # Local AI Chat
 
 A private, fast, and local AI chat interface powered by Ollama.
