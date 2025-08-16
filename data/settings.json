@@ -1,0 +1,19 @@
+{
+  "context_meter": {
+    "enabled": true
+  },
+  "default_model": "hf.co/bartowski/Qwen_Qwen3-4B-Instruct-2507-GGUF:Q4_K_M",
+  "language": {
+    "code": "en",
+    "name": "English"
+  },
+  "personality": {
+    "combine_note": "Combine all selected styles coherently.",
+    "enabled": true,
+    "selected": []
+  },
+  "ui": {
+    "animation": false,
+    "theme": "light"
+  }
+}

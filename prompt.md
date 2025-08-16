@@ -1,0 +1,332 @@
+Here is `prompt.md` to switch to per-message, non-persistent attachments and show them in the context bar.
+
+# prompt.md
+
+## Objective
+
+Make file attachments scoped to a single user message. They should not persist on the chat. They must be visible in the composer’s context bar while composing and included in the next request only.
+
+## Why
+
+Today attachments are stored at chat level and injected into the system prompt for every request via `_load_attachment_blocks(chat)`. This makes them persistent and global.&#x20;
+Attachments are uploaded to `/api/chats/<cid>/attachments` and saved into `chat['attachments']`, and files are written under `data/uploads/<chatId>`. &#x20;
+The frontend lists chat-level attachments and chips them in the bar.&#x20;
+
+## Target behavior
+
+* Attachments are tied to one outgoing user message (a “draft”).
+* They are shown as chips in the composer bar while composing.
+* On send, the server injects only those draft files into the system prompt for that one request, then deletes them.
+* No attachment data is written to the chat JSON.
+
+## API changes
+
+### New draft attachment endpoints
+
+All endpoints are ephemeral and keyed by `draft_id`.
+
+* `POST /api/chats/:cid/drafts/:draft_id/attachments`
+  Body: `multipart/form-data` with `file`
+  Response: `{ ok, item: {id,name,ext,tokens,size,path}, total_tokens }`
+
+* `GET /api/chats/:cid/drafts/:draft_id/attachments`
+  Response: `{ items, total_tokens }`
+
+* `DELETE /api/chats/:cid/drafts/:draft_id/attachments/:attid`
+  Response: `{ ok, total_tokens }`
+
+* `GET /api/chats/:cid/drafts/:draft_id/attachments/:attid/download`
+
+Token caps reuse existing constants `PER_FILE_TOKEN_LIMIT` and `TOTAL_TOKEN_LIMIT`. Keep `ATTACH_CHAR_BUDGET` for prompt injection.&#x20;
+
+### Stream payload
+
+Extend `/api/chat/stream` request body:
+`{ chat_id, model, user_message, sid, draft_id }`
+Server will read only files under this `draft_id` and inject them once. Existing `sid` already flows from the client.&#x20;
+
+## Backend plan (Flask)
+
+### Storage model
+
+* Folder: `data/uploads/<chatId>/drafts/<draft_id>/`.
+* Do not mutate `chat['attachments']` at all. Today new chats initialize with `"attachments":[]` and the server injects `_load_attachment_blocks(chat)`. Replace that path. &#x20;
+
+### New helpers
+
+```py
+# app.py
+DRAFTS_TTL_SEC = 24*3600
+
+def _draft_dir(cid: str, did: str) -> Path:
+    d = UPLOADS_DIR / cid / "drafts" / did
+    d.mkdir(parents=True, exist_ok=True)
+    return d
+
+def _read_draft_items(cid: str, did: str) -> List[Dict[str,Any]]:
+    folder = _draft_dir(cid, did)
+    items=[]
+    for p in sorted(folder.glob("*.*")):
+        att_id = p.stem
+        meta_p = folder / f"{att_id}.json"
+        if meta_p.exists():
+            try: items.append(json.loads(meta_p.read_text(encoding="utf-8")))
+            except: continue
+    return items
+
+def _draft_total_tokens(items: List[Dict[str,Any]]) -> int:
+    return sum(int(a.get("tokens",0)) for a in items)
+
+def _load_draft_attachment_block(cid: str, did: str) -> str:
+    items = _read_draft_items(cid, did)
+    if not items: return ""
+    used = 0
+    parts = ["Attached files:"]
+    for a in items:
+        p = _draft_dir(cid, did) / f"{a['id']}{a['ext']}"
+        try: text = p.read_text(encoding="utf-8")
+        except: text = "[unreadable or empty]"
+        header = f"File: {a['name']}"
+        chunk = f"{header}\n\n{text}\n"
+        if used + len(chunk) > ATTACH_CHAR_BUDGET: break
+        parts.append(chunk); used += len(chunk)
+    return "\n".join(parts)
+
+def _cleanup_old_drafts():
+    now = time.time()
+    for chat_folder in UPLOADS_DIR.glob("*"):
+        drafts = chat_folder / "drafts"
+        if not drafts.exists(): continue
+        for did in drafts.glob("*"):
+            age = now - did.stat().st_mtime
+            if age > DRAFTS_TTL_SEC:
+                try:
+                    for p in did.glob("*"): p.unlink()
+                    did.rmdir()
+                except: pass
+```
+
+### Endpoints
+
+```py
+@app.get("/api/chats/<cid>/drafts/<did>/attachments")
+def api_draft_list(cid, did):
+    items = _read_draft_items(cid, did)
+    return jsonify({"items": items, "total_tokens": _draft_total_tokens(items)})
+
+@app.post("/api/chats/<cid>/drafts/<did>/attachments")
+def api_draft_upload(cid, did):
+    # validate file as today: ext in ALLOWED_TEXT_EXTS, _is_probably_text(...)
+    # same token checks as chat-level flow
+    # write content to _draft_dir(cid,did)/<id><ext>
+    # write meta JSON alongside for quick listing
+    # return item and updated totals
+```
+
+Use the same validators you already have: `ALLOWED_TEXT_EXTS`, `_is_probably_text`, `_estimate_tokens`, and the per-file and total caps. &#x20;
+
+```py
+@app.delete("/api/chats/<cid>/drafts/<did>/attachments/<attid>")
+def api_draft_delete(cid, did, attid):
+    folder = _draft_dir(cid,did)
+    removed=False
+    for p in folder.glob(f"{attid}.*"): 
+        try: p.unlink(); removed=True
+        except: pass
+    meta = folder / f"{attid}.json"
+    try: meta.unlink(); removed=True
+    except: pass
+    items = _read_draft_items(cid, did)
+    return jsonify({"ok": removed, "total_tokens": _draft_total_tokens(items)})
+```
+
+```py
+@app.get("/api/chats/<cid>/drafts/<did>/attachments/<attid>/download")
+def api_draft_download(cid, did, attid):
+    folder = _draft_dir(cid, did)
+    for p in folder.glob(f"{attid}.*"):
+        return send_from_directory(folder, p.name, as_attachment=True)
+    return jsonify({"error":"not_found"}), 404
+```
+
+### Wire into streaming
+
+Replace chat-level injection with draft-level injection. Today you append the attachment block into `combined_system_prompt_parts` before user and assistant messages.&#x20;
+
+```py
+@app.post("/api/chat/stream")
+def api_chat_stream():
+    payload = request.get_json(force=True, silent=True) or {}
+    # existing validations...
+    did = (payload.get("draft_id") or "").strip()
+
+    # existing assemble of combined_system_prompt_parts...
+
+    # remove old chat-level block
+    # attach_block = _load_attachment_blocks(chat)  # delete usage
+
+    # add draft block once
+    if did:
+        try:
+            draft_block = _load_draft_attachment_block(chat["id"], did)
+            if draft_block:
+                combined_system_prompt_parts.append(draft_block)
+        except: pass
+
+    # streaming code unchanged...
+    def generate():
+        # existing code...
+        try:
+            # stream to model...
+            pass
+        finally:
+            # delete draft files after request completes
+            if did:
+                folder = _draft_dir(chat["id"], did)
+                try:
+                    for p in folder.glob("*"): p.unlink()
+                    folder.rmdir()
+                except: pass
+            _cleanup_old_drafts()
+```
+
+### Back-compat removal
+
+* Stop reading `chat['attachments']` anywhere. Remove `_load_attachment_blocks(chat)` from the system prompt assembly.&#x20;
+* Keep the old chat attachments endpoints temporarily returning 410 Gone, or remove them and the frontend calls that hit them. The current frontend fetches `/api/chats/<cid>/attachments`; that must be swapped to draft endpoints.&#x20;
+
+## Frontend plan (`index.html`)
+
+### State
+
+Add a draft id independent of streaming `sid`.
+
+```js
+let currentDraftId = null;
+function ensureDraftId(){ if(!currentDraftId) currentDraftId = crypto.randomUUID(); return currentDraftId; }
+function resetDraft(){ currentDraftId = null; currentAttachments = []; currentAttachmentsTokens = 0; renderAttachments(); }
+```
+
+### Allowed types and caps
+
+Keep the existing allow list and token limits.&#x20;
+
+### Uploads
+
+Replace chat-level uploads with draft-level.
+
+```js
+async function fetchAttachments(){
+  if(!currentChatId || !currentDraftId){ currentAttachments=[]; currentAttachmentsTokens=0; renderAttachments(); return; }
+  const res = await fetch(`/api/chats/${currentChatId}/drafts/${currentDraftId}/attachments`);
+  const data = await res.json();
+  currentAttachments = data.items||[];
+  currentAttachmentsTokens = data.total_tokens||0;
+  renderAttachments();
+}
+
+async function handleFiles(files){
+  ensureDraftId();
+  for(const file of files){
+    const ext = ("."+((file.name.split('.').pop()||'').toLowerCase()));
+    if(!ALLOWED_EXTS.has(ext)){ showToast(`Unsupported type: ${file.name}`); continue; }
+    const text = await file.text();
+    const tokens = estimateTokens(text);
+    if(tokens>PER_FILE_TOKEN_LIMIT){ showToast(`${file.name} exceeds ${PER_FILE_TOKEN_LIMIT} tokens`); continue; }
+    if(currentAttachmentsTokens+tokens>TOTAL_TOKEN_LIMIT){ showToast(`Adding ${file.name} exceeds total ${TOTAL_TOKEN_LIMIT} tokens`); continue; }
+    const fd=new FormData(); fd.append('file', new Blob([text],{type:'text/plain'}), file.name);
+    const res = await fetch(`/api/chats/${currentChatId}/drafts/${currentDraftId}/attachments`, { method:'POST', body:fd });
+    const data = await res.json(); if(!res.ok||!data.ok){ showToast(data.error||'Upload failed'); continue; }
+    currentAttachments = [...currentAttachments, data.item];
+    currentAttachmentsTokens = data.total_tokens;
+    renderAttachments();
+  }
+}
+```
+
+### Delete chip
+
+```js
+attachmentsBar?.addEventListener('click', async e=>{
+  const id=e.target.getAttribute('data-remove'); if(!id||!currentChatId||!currentDraftId) return;
+  const res=await fetch(`/api/chats/${currentChatId}/drafts/${currentDraftId}/attachments/${id}`, { method:'DELETE' });
+  await fetchAttachments();
+});
+```
+
+### Send
+
+Pass `draft_id` to the stream call and clear the draft after send completes. Today you send `{chat_id,model,user_message,sid}`. Extend it.&#x20;
+
+```js
+async function streamChatSend(text){
+  // existing setup...
+  const payload = { chat_id: currentChatId, model: currentModel, user_message: text, sid: currentSID, draft_id: currentDraftId||null };
+  res = await fetch('/api/chat/stream', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload), signal: streamCtrl.signal });
+  // reader loop as today...
+  // finally:
+  resetDraft(); // clear chips and totals
+}
+```
+
+### Composer UX
+
+* Keep current chips UI. It already renders `name` and `tokens` and supports remove.&#x20;
+* Disable send button while uploads are in flight.
+* Auto-clear file input after selection as today.&#x20;
+
+## Prompt injection format
+
+Unchanged for the model. Inject one block near top of the system prompt:
+
+```
+Attached files:
+File: <original-filename-1>
+
+<text 1>
+
+File: <original-filename-2>
+
+<text 2>
+```
+
+You already append such a block to `combined_system_prompt_parts`. Swap the source from chat-level to draft-level.&#x20;
+
+## Acceptance tests
+
+1. Upload one file. Send a message.
+
+* Expect: server receives `draft_id`, injects exactly that file’s text, then deletes the draft folder.
+* The next message has no files injected unless new uploads occur.
+
+2. Upload two files then remove one chip.
+
+* Expect: `GET /drafts/.../attachments` reflects one item. System prompt shows one `File:` block.
+
+3. Oversized file.
+
+* Expect: frontend toast on cap, server rejects with `file_over_token_limit`. Constants match backend caps.&#x20;
+
+4. Reload page mid-compose.
+
+* Expect: chips gone unless you recreate the `draft_id`. Drafts are ephemeral. No chat JSON contains attachments.
+
+5. Legacy endpoints.
+
+* Expect: no frontend calls to `/api/chats/:cid/attachments*`. The app should not create or read `chat['attachments']`.&#x20;
+
+## Cleanup and ops
+
+* Add `_cleanup_old_drafts()` on each stream finalize, and an hourly background sweep.
+* Remove `_load_attachment_blocks(chat)` usage to prevent accidental persistence.&#x20;
+* Keep `ALLOWED_TEXT_EXTS`, token limits, and text detection as is. &#x20;
+
+## Security notes
+
+* Reject non-text with `_is_probably_text`.&#x20;
+* Never execute HTML; the renderer already escapes.&#x20;
+* Filenames are user-supplied; show only stored `name` in UI and sanitize paths on disk.
+
+---
+
+This plan removes persistence, scopes files to a single message, and keeps the existing context bar UX with draft-scoped data.

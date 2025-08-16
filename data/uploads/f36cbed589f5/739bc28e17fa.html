@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Model Performance & Efficiency Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --secondary: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --light: #f9fafb;
+            --dark: #111827;
+            --gray: #6b7280;
+            --gray-light: #e5e7eb;
+            --white: #ffffff;
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --shadow-sm: 0 2px 10px rgba(0,0,0,0.05);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(249,250,251,0.95) 100%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            color: var(--gray);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .controls {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease 0.3s both;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        label {
+            font-weight: 600;
+            color: var(--dark);
+            min-width: 150px;
+        }
+
+        select, input {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--white);
+            flex: 1;
+            min-width: 200px;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        button {
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        .chart-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chart-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        canvas {
+            max-width: 100%;
+            height: 300px !important;
+        }
+
+        .table-container {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease 0.5s both;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-box input {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: var(--white);
+            min-width: 300px;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--light);
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+            border-bottom: 2px solid var(--gray-light);
+            cursor: pointer;
+            user-select: none;
+            transition: var(--transition);
+        }
+
+        th:hover {
+            background: var(--gray-light);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        tbody tr {
+            transition: var(--transition);
+        }
+
+        tbody tr:hover {
+            background: var(--light);
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-proprietary {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .badge-open {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .badge-apache {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .badge-mit {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+        }
+
+        .badge-other {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+        }
+
+        .efficiency-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--gray-light);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .efficiency-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), var(--primary));
+            transition: width 0.5s ease;
+        }
+
+        .model-size {
+            font-size: 0.85rem;
+            color: var(--gray);
+            font-weight: 600;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--gray-light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .control-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            label {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 AI Model Performance Dashboard</h1>
+            <p class="subtitle">Comprehensive Analysis of 200+ AI Models with Efficiency Scoring</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalModels">0</div>
+                <div class="stat-label">Total Models</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avgScore">0</div>
+                <div class="stat-label">Average Score</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="openSourceCount">0</div>
+                <div class="stat-label">Open Source Models</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="topEfficiency">0</div>
+                <div class="stat-label">Top Efficiency Score</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <h3 style="margin-bottom: 1rem;">⚙️ Scoring Parameters</h3>
+            <div class="control-group">
+                <label>Performance Weight:</label>
+                <input type="range" id="perfWeight" min="0" max="100" value="50">
+                <span id="perfWeightValue">50%</span>
+            </div>
+            <div class="control-group">
+                <label>Cost Weight:</label>
+                <input type="range" id="costWeight" min="0" max="100" value="30">
+                <span id="costWeightValue">30%</span>
+            </div>
+            <div class="control-group">
+                <label>Size Weight:</label>
+                <input type="range" id="sizeWeight" min="0" max="100" value="20">
+                <span id="sizeWeightValue">20%</span>
+            </div>
+            <div class="control-group">
+                <button onclick="recalculateScores()">Recalculate Scores</button>
+                <button onclick="resetWeights()">Reset Weights</button>
+            </div>
+        </div>
+
+        <div class="charts-container">
+            <div class="chart-card">
+                <h3 class="chart-title">📊 Score Distribution</h3>
+                <canvas id="scoreChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3 class="chart-title">🏢 Models by Company</h3>
+                <canvas id="companyChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3 class="chart-title">📜 License Distribution</h3>
+                <canvas id="licenseChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3 class="chart-title">💰 Efficiency vs Performance</h3>
+                <canvas id="efficiencyChart"></canvas>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <h3>🤖 AI Models Database</h3>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search models...">
+                    <select id="filterLicense">
+                        <option value="">All Licenses</option>
+                        <option value="Proprietary">Proprietary</option>
+                        <option value="Apache">Apache</option>
+                        <option value="MIT">MIT</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+            <div style="overflow-x: auto;">
+                <table id="modelsTable">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('rank')">Rank ↕</th>
+                            <th onclick="sortTable('name')">Model Name ↕</th>
+                            <th onclick="sortTable('score')">Score ↕</th>
+                            <th onclick="sortTable('efficiency')">Efficiency ↕</th>
+                            <th onclick="sortTable('size')">Est. Size ↕</th>
+                            <th onclick="sortTable('company')">Company ↕</th>
+                            <th onclick="sortTable('license')">License ↕</th>
+                            <th>Cost/1M tokens</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Model data
+        const modelsData = [
+            {rank: 1, name: "gpt-5-high", score: 1481, variance: 11, votes: 3181, company: "OpenAI", license: "Proprietary"},
+            {rank: 1, name: "gemini-2.5-pro", score: 1458, variance: 5, votes: 28091, company: "Google", license: "Proprietary"},
+            {rank: 2, name: "o3-2025-04-16", score: 1451, variance: 5, votes: 34027, company: "OpenAI", license: "Proprietary"},
+            {rank: 2, name: "claude-opus-4-1-20250805", score: 1446, variance: 9, votes: 5187, company: "Anthropic", license: "Proprietary"},
+            {rank: 4, name: "chatgpt-4o-latest-20250326", score: 1440, variance: 5, votes: 32125, company: "OpenAI", license: "Proprietary"},
+            {rank: 4, name: "gpt-4.5-preview-2025-02-27", score: 1438, variance: 6, votes: 15271, company: "OpenAI", license: "Proprietary"},
+            {rank: 5, name: "grok-4-0709", score: 1430, variance: 6, votes: 14078, company: "xAI", license: "Proprietary"},
+            {rank: 5, name: "qwen3-235b-a22b-instruct-2507", score: 1428, variance: 8, votes: 6097, company: "Alibaba", license: "Apache 2.0"},
+            {rank: 7, name: "kimi-k2-0711-preview", score: 1420, variance: 6, votes: 13578, company: "Moonshot", license: "Modified MIT"},
+            {rank: 7, name: "claude-opus-4-20250514-thinking-16k", score: 1420, variance: 6, votes: 19330, company: "Anthropic", license: "Proprietary"},
+            {rank: 8, name: "deepseek-r1-0528", score: 1418, variance: 6, votes: 19389, company: "DeepSeek", license: "MIT"},
+            {rank: 8, name: "glm-4.5", score: 1414, variance: 8, votes: 5907, company: "Z.ai", license: "MIT"},
+            {rank: 9, name: "claude-opus-4-20250514", score: 1412, variance: 5, votes: 27428, company: "Anthropic", license: "Proprietary"},
+            {rank: 11, name: "grok-3-preview-02-24", score: 1409, variance: 4, votes: 32987, company: "xAI", license: "Proprietary"},
+            {rank: 11, name: "gemini-2.5-flash", score: 1409, variance: 5, votes: 33123, company: "Google", license: "Proprietary"},
+            {rank: 12, name: "gpt-4.1-2025-04-14", score: 1406, variance: 5, votes: 26183, company: "OpenAI", license: "Proprietary"},
+            {rank: 12, name: "qwen3-235b-a22b-thinking-2507", score: 1401, variance: 8, votes: 5113, company: "Alibaba", license: "Apache 2.0"},
+            {rank: 15, name: "claude-sonnet-4-20250514-thinking-32k", score: 1399, variance: 6, votes: 18455, company: "Anthropic", license: "Proprietary"},
+            {rank: 16, name: "o1-2024-12-17", score: 1398, variance: 4, votes: 29038, company: "OpenAI", license: "Proprietary"},
+            {rank: 16, name: "o4-mini-2025-04-16", score: 1398, variance: 5, votes: 25741, company: "OpenAI", license: "Proprietary"},
+            {rank: 16, name: "qwen3-235b-a22b-no-thinking", score: 1397, variance: 5, votes: 25614, company: "Alibaba", license: "Apache 2.0"},
+            {rank: 17, name: "deepseek-r1", score: 1394, variance: 5, votes: 19430, company: "DeepSeek", license: "MIT"},
+            {rank: 17, name: "deepseek-v3-0324", score: 1390, variance: 5, votes: 28702, company: "DeepSeek", license: "MIT"},
+            {rank: 22, name: "o1-preview", score: 1385, variance: 5, votes: 33177, company: "OpenAI", license: "Proprietary"},
+            {rank: 22, name: "claude-3-7-sonnet-20250219-thinking-32k", score: 1385, variance: 5, votes: 33829, company: "Anthropic", license: "Proprietary"},
+            {rank: 23, name: "claude-sonnet-4-20250514", score: 1383, variance: 5, votes: 24044, company: "Anthropic", license: "Proprietary"},
+            {rank: 23, name: "hunyuan-turbos-20250416", score: 1381, variance: 6, votes: 11979, company: "Tencent", license: "Proprietary"},
+            {rank: 23, name: "mistral-medium-2505", score: 1381, variance: 5, votes: 29291, company: "Mistral", license: "Proprietary"},
+            {rank: 23, name: "qwen3-coder-480b-a35b-instruct", score: 1380, variance: 7, votes: 7316, company: "Alibaba", license: "Apache 2.0"},
+            {rank: 23, name: "glm-4.5-air", score: 1379, variance: 8, votes: 5933, company: "Z.ai", license: "MIT"},
+            {rank: 23, name: "qwen3-30b-a3b-instruct-2507", score: 1379, variance: 9, votes: 4765, company: "Alibaba", license: "Apache 2.0"},
+            {rank: 26, name: "gpt-4.1-mini-2025-04-14", score: 1374, variance: 5, votes: 25278, company: "OpenAI", license: "Proprietary"},
+            {rank: 27, name: "qwen3-235b-a22b", score: 1372, variance: 5, votes: 21654, company: "Alibaba", license: "Apache 2.0"},
+            {rank: 28, name: "qwen2.5-max", score: 1372, variance: 4, votes: 35454, company: "Alibaba", license: "Proprietary"},
+            {rank: 27, name: "minimax-m1", score: 1371, variance: 6, votes: 18936, company: "MiniMax", license: "Apache 2.0"},
+            {rank: 32, name: "Claude 3.5 Sonnet (10/22)", score: 1366, variance: 3, votes: 85863, company: "Anthropic", license: "Proprietary"},
+            {rank: 34, name: "gemma-3-27b-it", score: 1363, variance: 4, votes: 33338, company: "Google", license: "Gemma"},
+            {rank: 34, name: "o3-mini-high", score: 1363, variance: 5, votes: 19404, company: "OpenAI", license: "Proprietary"},
+            {rank: 35, name: "grok-3-mini-high", score: 1360, variance: 6, votes: 11458, company: "xAI", license: "Proprietary"},
+            {rank: 36, name: "grok-3-mini-beta", score: 1359, variance: 6, votes: 18105, company: "xAI", license: "Proprietary"},
+            {rank: 36, name: "gpt-oss-120b", score: 1356, variance: 10, votes: 3895, company: "OpenAI", license: "Apache 2.0"},
+            {rank: 37, name: "deepseek-v3", score: 1356, variance: 5, votes: 22841, company: "DeepSeek", license: "DeepSeek"},
+            {rank: 39, name: "gemini-2.0-flash-lite-preview-02-05", score: 1351, variance: 4, votes: 26104, company: "Google", license: "Proprietary"},
+            {rank: 40, name: "Gemini-1.5-Pro-002", score: 1350, variance: 3, votes: 58645, company: "Google", license: "Proprietary"},
+            {rank: 40, name: "mistral-small-2506", score: 1347, variance: 6, votes: 10463, company: "Mistral", license: "Apache 2.0"},
+            {rank: 42, name: "command-a-03-2025", score: 1346, variance: 4, votes: 32239, company: "Cohere", license: "CC-BY-NC-4.0"},
+            {rank: 39, name: "hunyuan-turbos-20250226", score: 1346, variance: 11, votes: 2452, company: "Tencent", license: "Proprietary"},
+            {rank: 39, name: "qwen3-32b", score: 1346, variance: 9, votes: 4074, company: "Alibaba", license: "Apache 2.0"},
+            {rank: 39, name: "llama-3.1-nemotron-ultra-253b-v1", score: 1345, variance: 11, votes: 2656, company: "Nvidia", license: "Nvidia Open Model"},
+            {rank: 42, name: "o3-mini", score: 1344, variance: 4, votes: 44487, company: "OpenAI", license: "Proprietary"},
+            {rank: 41, name: "qwen-plus-0125", score: 1344, variance: 8, votes: 6055, company: "Alibaba", license: "Proprietary"},
+            {rank: 45, name: "gpt-4o-2024-05-13", score: 1343, variance: 3, votes: 117747, company: "OpenAI", license: "Proprietary"},
+            {rank: 41, name: "nvidia-llama-3.3-nemotron-super-49b-v1.5", score: 1342, variance: 9, votes: 3915, company: "Nvidia", license: "Nvidia Open"},
+            {rank: 42, name: "glm-4-plus-0111", score: 1342, variance: 8, votes: 6028, company: "Zhipu", license: "Proprietary"},
+            {rank: 42, name: "gemma-3-12b-it", score: 1340, variance: 9, votes: 3976, company: "Google", license: "Gemma"},
+            {rank: 45, name: "Claude 3.5 Sonnet (06/20)", score: 1339, variance: 3, votes: 86159, company: "Anthropic", license: "Proprietary"},
+            {rank: 42, name: "hunyuan-turbo-0110", score: 1339, variance: 11, votes: 2510, company: "Tencent", license: "Proprietary"},
+            {rank: 46, name: "qwq-32b", score: 1336, variance: 5, votes: 22940, company: "Alibaba", license: "Apache 2.0"},
+            {rank: 49, name: "o1-mini", score: 1335, variance: 3, votes: 54951, company: "OpenAI", license: "Proprietary"},
+            {rank: 49, name: "llama-3.1-405b-instruct-bf16", score: 1334, variance: 4, votes: 43788, company: "Meta", license: "Llama 3.1 Community"},
+            {rank: 51, name: "llama-3.1-405b-instruct-fp8", score: 1333, variance: 3, votes: 63038, company: "Meta", license: "Llama 3.1 Community"},
+            {rank: 49, name: "GPT-4o (08/06)", score: 1332, variance: 4, votes: 47973, company: "OpenAI", license: "Proprietary"},
+            {rank: 52, name: "grok-2-2024-08-13", score: 1331, variance: 3, votes: 67084, company: "xAI", license: "Proprietary"},
+            {rank: 49, name: "step-2-16k-exp-202412", score: 1331, variance: 8, votes: 5126, company: "StepFun", license: "Proprietary"},
+            {rank: 51, name: "gemini-advanced-0514", score: 1331, variance: 5, votes: 52144, company: "Google", license: "Proprietary"},
+            {rank: 52, name: "llama-4-maverick-17b-128e-instruct", score: 1330, variance: 5, votes: 25835, company: "Meta", license: "Llama 4"},
+            {rank: 49, name: "gpt-oss-20b", score: 1329, variance: 10, votes: 3549, company: "OpenAI", license: "Apache 2.0"},
+            {rank: 55, name: "qwen3-30b-a3b", score: 1327, variance: 5, votes: 21583, company: "Alibaba", license: "Apache 2.0"},
+            {rank: 56, name: "yi-lightning", score: 1327, variance: 5, votes: 28968, company: "01 AI", license: "Proprietary"},
+            {rank: 51, name: "llama-3.3-nemotron-49b-super-v1", score: 1324, variance: 12, votes: 2371, company: "Nvidia", license: "Nvidia"},
+            {rank: 53, name: "hunyuan-large-2025-02-10", score: 1324, variance: 10, votes: 3856, company: "Tencent", license: "Proprietary"},
+            {rank: 64, name: "gpt-4-turbo-2024-04-09", score: 1323, variance: 4, votes: 102133, company: "OpenAI", license: "Proprietary"},
+            {rank: 60, name: "step-1o-turbo-202506", score: 1323, variance: 7, votes: 10645, company: "StepFun", license: "Proprietary"},
+            {rank: 66, name: "claude-3-opus-20240229", score: 1321, variance: 3, votes: 202641, company: "Anthropic", license: "Proprietary"},
+            {rank: 61, name: "deepseek-v2.5-1210", score: 1321, variance: 8, votes: 7243, company: "DeepSeek", license: "DeepSeek"},
+            {rank: 66, name: "gemini-1.5-pro-001", score: 1320, variance: 4, votes: 82435, company: "Google", license: "Proprietary"},
+            {rank: 64, name: "gpt-4.1-nano-2025-04-14", score: 1320, variance: 8, votes: 6302, company: "OpenAI", license: "Proprietary"},
+            {rank: 66, name: "llama-4-scout-17b-16e-instruct", score: 1318, variance: 6, votes: 15528, company: "Meta", license: "Llama"},
+            {rank: 66, name: "amazon-nova-experimental-chat-05-14", score: 1318, variance: 6, votes: 15176, company: "Amazon", license: "Proprietary"},
+            {rank: 69, name: "glm-4-plus", score: 1317, variance: 5, votes: 27788, company: "Zhipu AI", license: "Proprietary"},
+            {rank: 69, name: "llama-3.3-70b-instruct", score: 1317, variance: 4, votes: 52827, company: "Meta", license: "Llama-3.3"},
+            {rank: 69, name: "claude-3-5-haiku-20241022", score: 1317, variance: 3, votes: 57248, company: "Anthropic", license: "Proprietary"},
+            {rank: 69, name: "qwen-max-0919", score: 1316, variance: 5, votes: 17432, company: "Alibaba", license: "Qwen"},
+            {rank: 70, name: "GPT-4o-mini (07/18)", score: 1315, variance: 3, votes: 72427, company: "OpenAI", license: "Proprietary"},
+            {rank: 69, name: "qwen2.5-plus-1127", score: 1314, variance: 6, votes: 10715, company: "Alibaba", license: "Proprietary"},
+            {rank: 72, name: "gpt-4-1106-preview", score: 1314, variance: 4, votes: 103748, company: "OpenAI", license: "Proprietary"},
+            {rank: 69, name: "gemma-3n-e4b-it", score: 1314, variance: 6, votes: 14422, company: "Google", license: "Gemma"},
+            {rank: 72, name: "gpt-4-0125-preview", score: 1314, variance: 4, votes: 97079, company: "OpenAI", license: "Proprietary"},
+            {rank: 72, name: "athene-v2-chat", score: 1313, variance: 4, votes: 26074, company: "NexusFlow", license: "NexusFlow"},
+            {rank: 72, name: "mistral-large-2407", score: 1313, variance: 4, votes: 48217, company: "Mistral", license: "Mistral Research"},
+            {rank: 74, name: "Gemini-1.5-Flash-002", score: 1312, variance: 4, votes: 37021, company: "Google", license: "Proprietary"},
+            {rank: 72, name: "hunyuan-standard-2025-02-10", score: 1309, variance: 10, votes: 4014, company: "Tencent", license: "Proprietary"},
+            {rank: 86, name: "deepseek-v2.5", score: 1306, variance: 4, votes: 26344, company: "DeepSeek", license: "DeepSeek"},
+            {rank: 87, name: "grok-2-mini-2024-08-13", score: 1306, variance: 4, votes: 55442, company: "xAI", license: "Proprietary"},
+            {rank: 88, name: "mistral-large-2411", score: 1305, variance: 4, votes: 29633, company: "Mistral", license: "MRL"},
+            {rank: 87, name: "athene-70b-0725", score: 1304, variance: 5, votes: 20580, company: "NexusFlow", license: "CC-BY-NC-4.0"},
+            {rank: 81, name: "gemma-3-4b-it", score: 1303, variance: 9, votes: 4321, company: "Google", license: "Gemma"},
+            {rank: 92, name: "qwen2.5-72b-instruct", score: 1302, variance: 4, votes: 41519, company: "Alibaba", license: "Qwen"},
+            {rank: 92, name: "magistral-medium-2506", score: 1300, variance: 7, votes: 9050, company: "Mistral", license: "Proprietary"},
+            {rank: 92, name: "llama-3.1-nemotron-70b-instruct", score: 1297, variance: 8, votes: 7577, company: "Nvidia", license: "Llama 3.1"},
+            {rank: 92, name: "hunyuan-large-vision", score: 1296, variance: 9, votes: 6087, company: "Tencent", license: "Proprietary"},
+            {rank: 98, name: "Meta-Llama-3.1-70B-Instruct", score: 1294, variance: 3, votes: 58637, company: "Meta", license: "Llama 3.1 Community"},
+            {rank: 96, name: "mistral-small-3.1-24b-instruct-2503", score: 1293, variance: 6, votes: 15334, company: "Mistral", license: "Apache 2.0"},
+            {rank: 99, name: "amazon-nova-pro-v1.0", score: 1289, variance: 4, votes: 26371, company: "Amazon", license: "Proprietary"},
+            {rank: 97, name: "llama-3.1-tulu-3-70b", score: 1289, variance: 10, votes: 3010, company: "Ai2", license: "Llama 3.1"},
+            {rank: 98, name: "jamba-1.5-large", score: 1288, variance: 7, votes: 9125, company: "AI21 Labs", license: "Jamba Open"},
+            {rank: 98, name: "reka-core-20240904", score: 1288, variance: 7, votes: 7948, company: "Reka AI", license: "Proprietary"},
+            {rank: 100, name: "gpt-4-0314", score: 1286, variance: 5, votes: 55962, company: "OpenAI", license: "Proprietary"},
+            {rank: 98, name: "llama-3.1-nemotron-51b-instruct", score: 1286, variance: 10, votes: 3889, company: "Nvidia", license: "Llama 3.1"},
+            {rank: 102, name: "gemma-2-27b-it", score: 1286, variance: 3, votes: 79538, company: "Google", license: "Gemma license"},
+            {rank: 102, name: "gemini-1.5-flash-001", score: 1284, variance: 4, votes: 65661, company: "Google", license: "Proprietary"},
+            {rank: 104, name: "claude-3-sonnet-20240229", score: 1282, variance: 4, votes: 113067, company: "Anthropic", license: "Proprietary"},
+            {rank: 104, name: "gemma-2-9b-it-simpo", score: 1279, variance: 7, votes: 10548, company: "Princeton", license: "MIT"},
+            {rank: 105, name: "nemotron-4-340b-instruct", score: 1279, variance: 5, votes: 20608, company: "Nvidia", license: "NVIDIA Open Model"},
+            {rank: 104, name: "command-r-plus-08-2024", score: 1279, variance: 6, votes: 10535, company: "Cohere", license: "CC-BY-NC-4.0"},
+            {rank: 110, name: "llama-3-70b-instruct", score: 1276, variance: 3, votes: 163629, company: "Meta", license: "Llama 3 Community"},
+            {rank: 106, name: "glm-4-0520", score: 1275, variance: 7, votes: 10221, company: "Zhipu AI", license: "Proprietary"},
+            {rank: 107, name: "reka-flash-20240904", score: 1275, variance: 7, votes: 8132, company: "Reka AI", license: "Proprietary"},
+            {rank: 110, name: "gpt-4-0613", score: 1275, variance: 4, votes: 91614, company: "OpenAI", license: "Proprietary"},
+            {rank: 109, name: "mistral-small-24b-instruct-2501", score: 1275, variance: 6, votes: 15321, company: "Mistral", license: "Apache 2.0"},
+            {rank: 110, name: "qwen2.5-coder-32b-instruct", score: 1271, variance: 8, votes: 5730, company: "Alibaba", license: "Apache 2.0"},
+            {rank: 114, name: "c4ai-aya-expanse-32b", score: 1268, variance: 5, votes: 28768, company: "Cohere", license: "CC-BY-NC-4.0"},
+            {rank: 119, name: "command-r-plus", score: 1265, variance: 4, votes: 80846, company: "Cohere", license: "CC-BY-NC-4.0"},
+            {rank: 119, name: "qwen2-72b-instruct", score: 1264, variance: 5, votes: 38872, company: "Alibaba", license: "Qianwen LICENSE"},
+            {rank: 121, name: "gemma-2-9b-it", score: 1264, variance: 4, votes: 57197, company: "Google", license: "Gemma license"},
+            {rank: 118, name: "deepseek-coder-v2", score: 1263, variance: 6, votes: 15753, company: "DeepSeek AI", license: "DeepSeek License"},
+            {rank: 121, name: "claude-3-haiku-20240307", score: 1262, variance: 4, votes: 122309, company: "Anthropic", license: "Proprietary"},
+            {rank: 121, name: "amazon-nova-lite-v1.0", score: 1262, variance: 5, votes: 20646, company: "Amazon", license: "Proprietary"},
+            {rank: 121, name: "gemini-1.5-flash-8b-001", score: 1261, variance: 4, votes: 37697, company: "Google", license: "Proprietary"},
+            {rank: 123, name: "phi-4", score: 1258, variance: 4, votes: 25213, company: "Microsoft", license: "MIT"},
+            {rank: 121, name: "olmo-2-0325-32b-instruct", score: 1256, variance: 11, votes: 3460, company: "Allen AI", license: "Apache-2.0"},
+            {rank: 123, name: "command-r-08-2024", score: 1254, variance: 6, votes: 10851, company: "Cohere", license: "CC-BY-NC-4.0"},
+            {rank: 131, name: "amazon-nova-micro-v1.0", score: 1244, variance: 5, votes: 20654, company: "Amazon", license: "Proprietary"},
+            {rank: 132, name: "mistral-large-2402", score: 1244, variance: 5, votes: 64926, company: "Mistral", license: "Proprietary"},
+            {rank: 132, name: "jamba-1.5-mini", score: 1240, variance: 7, votes: 9274, company: "AI21 Labs", license: "Jamba Open"},
+            {rank: 132, name: "ministral-8b-2410", score: 1239, variance: 9, votes: 5111, company: "Mistral", license: "MRL"},
+            {rank: 133, name: "qwen1.5-110b-chat", score: 1237, variance: 5, votes: 27430, company: "Alibaba", license: "Qianwen LICENSE"},
+            {rank: 132, name: "hunyuan-standard-256k", score: 1236, variance: 11, votes: 2901, company: "Tencent", license: "Proprietary"},
+            {rank: 133, name: "qwen1.5-72b-chat", score: 1235, variance: 5, votes: 40658, company: "Alibaba", license: "Qianwen LICENSE"},
+            {rank: 133, name: "reka-flash-21b-20240226-online", score: 1235, variance: 7, votes: 16027, company: "Reka AI", license: "Proprietary"},
+            {rank: 133, name: "gemini-pro-dev-api", score: 1233, variance: 7, votes: 18800, company: "Google", license: "Proprietary"},
+            {rank: 135, name: "mixtral-8x22b-instruct-v0.1", score: 1232, variance: 4, votes: 53751, company: "Mistral", license: "Apache 2.0"},
+            {rank: 135, name: "command-r", score: 1231, variance: 5, votes: 56398, company: "Cohere", license: "CC-BY-NC-4.0"},
+            {rank: 135, name: "reka-flash-21b-20240226", score: 1228, variance: 6, votes: 25803, company: "Reka AI", license: "Proprietary"},
+            {rank: 135, name: "c4ai-aya-expanse-8b", score: 1227, variance: 7, votes: 10391, company: "Cohere", license: "CC-BY-NC-4.0"},
+            {rank: 136, name: "mistral-medium", score: 1226, variance: 5, votes: 35556, company: "Mistral", license: "Proprietary"},
+            {rank: 135, name: "llama-3.1-tulu-3-8b", score: 1225, variance: 10, votes: 3074, company: "Ai2", license: "Llama 3.1"},
+            {rank: 139, name: "llama-3-8b-instruct", score: 1225, variance: 4, votes: 109056, company: "Meta", license: "Llama 3 Community"},
+            {rank: 139, name: "gpt-3.5-turbo-0125", score: 1224, variance: 5, votes: 68867, company: "OpenAI", license: "Proprietary"},
+            {rank: 136, name: "gemini-pro", score: 1221, variance: 12, votes: 6557, company: "Google", license: "Proprietary"},
+            {rank: 145, name: "yi-1.5-34b-chat", score: 1217, variance: 5, votes: 25135, company: "01 AI", license: "Apache-2.0"},
+            {rank: 143, name: "zephyr-orpo-141b-A35b-v0.1", score: 1215, variance: 11, votes: 4854, company: "HuggingFace", license: "Apache 2.0"},
+            {rank: 149, name: "llama-3.1-8b-instruct", score: 1215, variance: 4, votes: 52578, company: "Meta", license: "Llama 3.1 Community"},
+            {rank: 144, name: "granite-3.1-8b-instruct", score: 1213, variance: 10, votes: 3289, company: "IBM", license: "Apache 2.0"},
+            {rank: 150, name: "qwen1.5-32b-chat", score: 1208, variance: 6, votes: 22765, company: "Alibaba", license: "Qianwen LICENSE"},
+            {rank: 152, name: "gpt-3.5-turbo-1106", score: 1201, variance: 9, votes: 17036, company: "OpenAI", license: "Proprietary"},
+            {rank: 153, name: "phi-3-medium-4k-instruct", score: 1201, variance: 5, votes: 26105, company: "Microsoft", license: "MIT"},
+            {rank: 154, name: "mixtral-8x7b-instruct-v0.1", score: 1201, variance: 4, votes: 76126, company: "Mistral", license: "Apache 2.0"},
+            {rank: 154, name: "gemma-2-2b-it", score: 1200, variance: 4, votes: 48892, company: "Google", license: "Gemma license"},
+            {rank: 153, name: "internlm2_5-20b-chat", score: 1199, variance: 7, votes: 10599, company: "InternLM", license: "Other"},
+            {rank: 154, name: "dbrx-instruct-preview", score: 1198, variance: 6, votes: 33743, company: "Databricks", license: "DBRX LICENSE"},
+            {rank: 155, name: "qwen1.5-14b-chat", score: 1195, variance: 7, votes: 18687, company: "Alibaba", license: "Qianwen LICENSE"},
+            {rank: 156, name: "wizardlm-70b", score: 1188, variance: 9, votes: 8383, company: "Microsoft", license: "Llama 2 Community"},
+            {rank: 159, name: "granite-3.0-8b-instruct", score: 1187, variance: 8, votes: 7002, company: "IBM", license: "Apache 2.0"},
+            {rank: 159, name: "yi-34b-chat", score: 1187, variance: 7, votes: 15917, company: "01 AI", license: "Yi License"},
+            {rank: 156, name: "deepseek-llm-67b-chat", score: 1186, variance: 11, votes: 4988, company: "DeepSeek AI", license: "DeepSeek License"},
+            {rank: 159, name: "openchat-3.5-0106", score: 1185, variance: 8, votes: 12990, company: "OpenChat", license: "Apache-2.0"},
+            {rank: 159, name: "granite-3.1-2b-instruct", score: 1184, variance: 11, votes: 3380, company: "IBM", license: "Apache 2.0"},
+            {rank: 160, name: "openchat-3.5", score: 1183, variance: 10, votes: 8106, company: "OpenChat", license: "Apache-2.0"},
+            {rank: 162, name: "snowflake-arctic-instruct", score: 1183, variance: 6, votes: 34173, company: "Snowflake", license: "Apache 2.0"},
+            {rank: 161, name: "tulu-2-dpo-70b", score: 1182, variance: 10, votes: 6658, company: "AllenAI/UW", license: "AI2 ImpACT Low-risk"},
+            {rank: 163, name: "gemma-1.1-7b-it", score: 1179, variance: 6, votes: 25070, company: "Google", license: "Gemma license"},
+            {rank: 163, name: "openhermes-2.5-mistral-7b", score: 1178, variance: 10, votes: 5088, company: "NousResearch", license: "Apache-2.0"},
+            {rank: 163, name: "vicuna-33b", score: 1177, variance: 6, votes: 22936, company: "LMSYS", license: "Non-commercial"},
+            {rank: 163, name: "starling-lm-7b-beta", score: 1176, variance: 7, votes: 16676, company: "Nexusflow", license: "Apache-2.0"},
+            {rank: 163, name: "phi-3-small-8k-instruct", score: 1176, variance: 6, votes: 18476, company: "Microsoft", license: "MIT"},
+            {rank: 163, name: "llama-2-70b-chat", score: 1175, variance: 5, votes: 39595, company: "Meta", license: "Llama 2 Community"},
+            {rank: 164, name: "llama-3.2-3b-instruct", score: 1172, variance: 7, votes: 8390, company: "Meta", license: "Llama 3.2"},
+            {rank: 164, name: "starling-lm-7b-alpha", score: 1171, variance: 8, votes: 10415, company: "UC Berkeley", license: "CC-BY-NC-4.0"},
+            {rank: 163, name: "nous-hermes-2-mixtral-8x7b-dpo", score: 1170, variance: 12, votes: 3836, company: "NousResearch", license: "Apache-2.0"},
+            {rank: 163, name: "qwq-32b-preview", score: 1169, variance: 11, votes: 3410, company: "Alibaba", license: "Apache 2.0"},
+            {rank: 175, name: "granite-3.0-2b-instruct", score: 1162, variance: 8, votes: 7191, company: "IBM", license: "Apache 2.0"},
+            {rank: 169, name: "llama2-70b-steerlm-chat", score: 1162, variance: 13, votes: 3636, company: "Nvidia", license: "Llama 2 Community"},
+            {rank: 173, name: "solar-10.7b-instruct-v1.0", score: 1158, variance: 13, votes: 4286, company: "Upstage AI", license: "CC-BY-NC-4.0"},
+            {rank: 173, name: "dolphin-2.2.1-mistral-7b", score: 1156, variance: 15, votes: 1714, company: "Cognitive Computations", license: "Apache-2.0"},
+            {rank: 180, name: "mistral-7b-instruct-v0.2", score: 1155, variance: 6, votes: 20067, company: "Mistral", license: "Apache-2.0"},
+            {rank: 178, name: "mpt-30b-chat", score: 1153, variance: 12, votes: 2644, company: "MosaicML", license: "CC-BY-NC-SA-4.0"},
+            {rank: 180, name: "wizardlm-13b", score: 1153, variance: 9, votes: 7176, company: "Microsoft", license: "Llama 2 Community"},
+            {rank: 178, name: "falcon-180b-chat", score: 1148, variance: 17, votes: 1327, company: "TII", license: "Falcon-180B TII License"},
+            {rank: 182, name: "phi-3-mini-4k-instruct-june-2024", score: 1148, variance: 6, votes: 12808, company: "Microsoft", license: "MIT"},
+            {rank: 182, name: "qwen1.5-7b-chat", score: 1147, variance: 10, votes: 4872, company: "Alibaba", license: "Qianwen LICENSE"},
+            {rank: 183, name: "llama-2-13b-chat", score: 1147, variance: 7, votes: 19722, company: "Meta", license: "Llama 2 Community"},
+            {rank: 183, name: "vicuna-13b", score: 1145, variance: 7, votes: 19775, company: "LMSYS", license: "Llama 2 Community"},
+            {rank: 183, name: "qwen-14b-chat", score: 1141, variance: 11, votes: 5065, company: "Alibaba", license: "Qianwen LICENSE"},
+            {rank: 184, name: "codellama-34b-instruct", score: 1140, variance: 9, votes: 7509, company: "Meta", license: "Llama 2 Community"},
+            {rank: 185, name: "palm-2", score: 1137, variance: 9, votes: 8713, company: "Google", license: "Proprietary"},
+            {rank: 187, name: "phi-3-mini-128k-instruct", score: 1136, variance: 7, votes: 21622, company: "Microsoft", license: "MIT"},
+            {rank: 185, name: "gemma-7b-it", score: 1136, variance: 9, votes: 9176, company: "Google", license: "Gemma license"},
+            {rank: 186, name: "zephyr-7b-beta", score: 1135, variance: 9, votes: 11321, company: "HuggingFace", license: "MIT"},
+            {rank: 190, name: "phi-3-mini-4k-instruct", score: 1134, variance: 6, votes: 21097, company: "Microsoft", license: "MIT"},
+            {rank: 185, name: "zephyr-7b-alpha", score: 1132, variance: 16, votes: 1811, company: "HuggingFace", license: "MIT"},
+            {rank: 187, name: "guanaco-33b", score: 1131, variance: 12, votes: 2996, company: "UW", license: "Non-commercial"},
+            {rank: 187, name: "smollm2-1.7b-instruct", score: 1129, variance: 13, votes: 2375, company: "HuggingFace", license: "Apache 2.0"},
+            {rank: 188, name: "codellama-70b-instruct", score: 1124, variance: 18, votes: 1192, company: "Meta", license: "Llama 2 Community"},
+            {rank: 193, name: "stripedhyena-nous-7b", score: 1123, variance: 11, votes: 5276, company: "Together AI", license: "Apache 2.0"},
+            {rank: 196, name: "llama-3.2-1b-instruct", score: 1121, variance: 7, votes: 8523, company: "Meta", license: "Llama 3.2"},
+            {rank: 199, name: "vicuna-7b", score: 1118, variance: 9, votes: 7017, company: "LMSYS", license: "Llama 2 Community"},
+            {rank: 201, name: "gemma-1.1-2b-it", score: 1115, variance: 7, votes: 11351, company: "Google", license: "Gemma license"},
+            {rank: 201, name: "llama-2-7b-chat", score: 1113, variance: 7, votes: 14532, company: "Meta", license: "Llama 2 Community"},
+            {rank: 201, name: "mistral-7b-instruct", score: 1113, variance: 9, votes: 9142, company: "Mistral", license: "Apache 2.0"},
+            {rank: 211, name: "qwen1.5-4b-chat", score: 1094, variance: 9, votes: 7816, company: "Alibaba", license: "Qianwen LICENSE"},
+            {rank: 210, name: "gemma-2b-it", score: 1092, variance: 11, votes: 4918, company: "Google", license: "Gemma license"},
+            {rank: 211, name: "olmo-7b-instruct", score: 1080, variance: 11, votes: 6503, company: "Allen AI", license: "Apache-2.0"},
+            {rank: 212, name: "koala-13b", score: 1073, variance: 10, votes: 7020, company: "UC Berkeley", license: "Non-commercial"},
+            {rank: 213, name: "gpt4all-13b-snoozy", score: 1065, variance: 15, votes: 1788, company: "Nomic AI", license: "Non-commercial"},
+            {rank: 213, name: "alpaca-13b", score: 1064, variance: 11, votes: 5864, company: "Stanford", license: "Non-commercial"},
+            {rank: 213, name: "mpt-7b-chat", score: 1063, variance: 12, votes: 3997, company: "MosaicML", license: "CC-BY-NC-SA-4.0"},
+            {rank: 213, name: "chatglm3-6b", score: 1059, variance: 12, votes: 4763, company: "Tsinghua", license: "Apache-2.0"},
+            {rank: 215, name: "RWKV-4-Raven-14B", score: 1043, variance: 11, votes: 4920, company: "RWKV", license: "Apache 2.0"},
+            {rank: 219, name: "chatglm2-6b", score: 1029, variance: 13, votes: 2713, company: "Tsinghua", license: "Apache-2.0"},
+            {rank: 219, name: "oasst-pythia-12b", score: 1022, variance: 11, votes: 6368, company: "OpenAssistant", license: "Apache 2.0"},
+            {rank: 222, name: "chatglm-6b", score: 999, variance: 13, votes: 4983, company: "Tsinghua", license: "Non-commercial"},
+            {rank: 222, name: "fastchat-t5-3b", score: 992, variance: 12, votes: 4288, company: "LMSYS", license: "Apache 2.0"},
+            {rank: 222, name: "dolly-v2-12b", score: 977, variance: 14, votes: 3480, company: "Databricks", license: "MIT"},
+            {rank: 223, name: "llama-13b", score: 968, variance: 16, votes: 2446, company: "Meta", license: "Non-commercial"},
+            {rank: 224, name: "stablelm-tuned-alpha-7b", score: 955, variance: 13, votes: 3336, company: "Stability AI", license: "CC-BY-NC-SA-4.0"}
+        ];
+
+        // Estimate model sizes and costs
+        function estimateModelSize(modelName) {
+            const name = modelName.toLowerCase();
+            if (name.includes('gpt-5') || name.includes('high') || name.includes('ultra')) return 1500;
+            if (name.includes('pro') || name.includes('opus') || name.includes('405b')) return 1000;
+            if (name.includes('235b') || name.includes('253b')) return 235;
+            if (name.includes('180b')) return 180;
+            if (name.includes('340b')) return 340;
+            if (name.includes('480b')) return 480;
+            if (name.includes('110b') || name.includes('120b')) return 110;
+            if (name.includes('70b') || name.includes('72b')) return 70;
+            if (name.includes('67b')) return 67;
+            if (name.includes('mini') || name.includes('flash')) return 100;
+            if (name.includes('nano') || name.includes('micro')) return 20;
+            if (name.includes('32b') || name.includes('33b') || name.includes('34b')) return 33;
+            if (name.includes('30b')) return 30;
+            if (name.includes('27b')) return 27;
+            if (name.includes('24b') || name.includes('20b') || name.includes('21b')) return 20;
+            if (name.includes('17b')) return 17;
+            if (name.includes('14b') || name.includes('13b')) return 13;
+            if (name.includes('12b')) return 12;
+            if (name.includes('8b') || name.includes('9b') || name.includes('7b')) return 8;
+            if (name.includes('6b')) return 6;
+            if (name.includes('4b') || name.includes('3b')) return 3;
+            if (name.includes('2b') || name.includes('1.7b') || name.includes('1b')) return 2;
+            if (name.includes('small')) return 15;
+            if (name.includes('medium')) return 50;
+            if (name.includes('large')) return 100;
+            return 50; // default
+        }
+
+        function estimateCost(sizeInB) {
+            // Estimate cost per 1M tokens based on model size
+            if (sizeInB >= 1000) return 15.0;
+            if (sizeInB >= 500) return 10.0;
+            if (sizeInB >= 200) return 5.0;
+            if (sizeInB >= 100) return 3.0;
+            if (sizeInB >= 50) return 2.0;
+            if (sizeInB >= 20) return 1.0;
+            if (sizeInB >= 10) return 0.5;
+            return 0.25;
+        }
+
+        // Process all models
+        modelsData.forEach(model => {
+            model.sizeInB = estimateModelSize(model.name);
+            model.cost = estimateCost(model.sizeInB);
+            model.efficiency = calculateEfficiency(model.score, model.sizeInB, model.cost);
+        });
+
+        function calculateEfficiency(score, size, cost) {
+            const perfWeight = parseFloat(document.getElementById('perfWeight')?.value || 50) / 100;
+            const costWeight = parseFloat(document.getElementById('costWeight')?.value || 30) / 100;
+            const sizeWeight = parseFloat(document.getElementById('sizeWeight')?.value || 20) / 100;
+            
+            const perfScore = score / 1500; // Normalize to 0-1
+            const costScore = 1 - (cost / 15); // Inverse, lower cost is better
+            const sizeScore = 1 - (size / 1500); // Inverse, smaller size is better
+            
+            return Math.round((perfScore * perfWeight + costScore * costWeight + sizeScore * sizeWeight) * 100);
+        }
+
+        function getLicenseBadgeClass(license) {
+            if (license.includes('Proprietary')) return 'badge-proprietary';
+            if (license.includes('Apache')) return 'badge-apache';
+            if (license.includes('MIT')) return 'badge-mit';
+            if (license.includes('Gemma') || license.includes('Llama')) return 'badge-open';
+            return 'badge-other';
+        }
+
+        function updateStats() {
+            document.getElementById('totalModels').textContent = modelsData.length;
+            document.getElementById('avgScore').textContent = Math.round(modelsData.reduce((sum, m) => sum + m.score, 0) / modelsData.length);
+            document.getElementById('openSourceCount').textContent = modelsData.filter(m => !m.license.includes('Proprietary')).length;
+            document.getElementById('topEfficiency').textContent = Math.max(...modelsData.map(m => m.efficiency));
+        }
+
+        function renderTable(data = modelsData) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            
+            data.forEach(model => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${model.rank}</td>
+                    <td><strong>${model.name}</strong></td>
+                    <td>${model.score} ±${model.variance || 0}</td>
+                    <td>
+                        ${model.efficiency}%
+                        <div class="efficiency-bar">
+                            <div class="efficiency-fill" style="width: ${model.efficiency}%"></div>
+                        </div>
+                    </td>
+                    <td><span class="model-size">${model.sizeInB}B</span></td>
+                    <td>${model.company}</td>
+                    <td><span class="badge ${getLicenseBadgeClass(model.license)}">${model.license}</span></td>
+                    <td>$${model.cost.toFixed(2)}</td>
+                `;
+            });
+        }
+
+        function initCharts() {
+            // Score Distribution Chart
+            const scoreCtx = document.getElementById('scoreChart').getContext('2d');
+            const scoreRanges = [
+                { label: '950-1000', count: 0 },
+                { label: '1000-1100', count: 0 },
+                { label: '1100-1200', count: 0 },
+                { label: '1200-1300', count: 0 },
+                { label: '1300-1400', count: 0 },
+                { label: '1400+', count: 0 }
+            ];
+            
+            modelsData.forEach(m => {
+                if (m.score < 1000) scoreRanges[0].count++;
+                else if (m.score < 1100) scoreRanges[1].count++;
+                else if (m.score < 1200) scoreRanges[2].count++;
+                else if (m.score < 1300) scoreRanges[3].count++;
+                else if (m.score < 1400) scoreRanges[4].count++;
+                else scoreRanges[5].count++;
+            });
+
+            new Chart(scoreCtx, {
+                type: 'bar',
+                data: {
+                    labels: scoreRanges.map(r => r.label),
+                    datasets: [{
+                        label: 'Number of Models',
+                        data: scoreRanges.map(r => r.count),
+                        backgroundColor: 'rgba(99, 102, 241, 0.8)',
+                        borderColor: 'rgba(99, 102, 241, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            // Company Distribution Chart
+            const companyCtx = document.getElementById('companyChart').getContext('2d');
+            const companyCounts = {};
+            modelsData.forEach(m => {
+                companyCounts[m.company] = (companyCounts[m.company] || 0) + 1;
+            });
+            const topCompanies = Object.entries(companyCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+
+            new Chart(companyCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: topCompanies.map(c => c[0]),
+                    datasets: [{
+                        data: topCompanies.map(c => c[1]),
+                        backgroundColor: [
+                            '#6366f1', '#8b5cf6', '#ec4899', '#f59e0b',
+                            '#10b981', '#3b82f6', '#ef4444', '#14b8a6',
+                            '#f97316', '#84cc16'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // License Distribution Chart
+            const licenseCtx = document.getElementById('licenseChart').getContext('2d');
+            const licenseCounts = {
+                'Proprietary': 0,
+                'Apache': 0,
+                'MIT': 0,
+                'Other Open': 0
+            };
+            
+            modelsData.forEach(m => {
+                if (m.license.includes('Proprietary')) licenseCounts['Proprietary']++;
+                else if (m.license.includes('Apache')) licenseCounts['Apache']++;
+                else if (m.license.includes('MIT')) licenseCounts['MIT']++;
+                else licenseCounts['Other Open']++;
+            });
+
+            new Chart(licenseCtx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(licenseCounts),
+                    datasets: [{
+                        data: Object.values(licenseCounts),
+                        backgroundColor: ['#ef4444', '#3b82f6', '#8b5cf6', '#10b981']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // Efficiency vs Performance Chart
+            const effCtx = document.getElementById('efficiencyChart').getContext('2d');
+            const effData = modelsData.slice(0, 30).map(m => ({
+                x: m.score,
+                y: m.efficiency,
+                label: m.name
+            }));
+
+            new Chart(effCtx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Models',
+                        data: effData,
+                        backgroundColor: 'rgba(99, 102, 241, 0.6)',
+                        borderColor: 'rgba(99, 102, 241, 1)',
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Performance Score'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Efficiency %'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.raw.label + ': ' + context.parsed.y + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function recalculateScores() {
+            modelsData.forEach(model => {
+                model.efficiency = calculateEfficiency(model.score, model.sizeInB, model.cost);
+            });
+            renderTable();
+            updateStats();
+        }
+
+        function resetWeights() {
+            document.getElementById('perfWeight').value = 50;
+            document.getElementById('costWeight').value = 30;
+            document.getElementById('sizeWeight').value = 20;
+            document.getElementById('perfWeightValue').textContent = '50%';
+            document.getElementById('costWeightValue').textContent = '30%';
+            document.getElementById('sizeWeightValue').textContent = '20%';
+            recalculateScores();
+        }
+
+        let sortOrder = {};
+        function sortTable(column) {
+            sortOrder[column] = !sortOrder[column];
+            const sorted = [...modelsData].sort((a, b) => {
+                let aVal = a[column];
+                let bVal = b[column];
+                if (typeof aVal === 'string') {
+                    return sortOrder[column] ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+                }
+                return sortOrder[column] ? aVal - bVal : bVal - aVal;
+            });
+            renderTable(sorted);
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStats();
+            renderTable();
+            initCharts();
+
+            // Weight sliders
+            ['perfWeight', 'costWeight', 'sizeWeight'].forEach(id => {
+                document.getElementById(id).addEventListener('input', (e) => {
+                    document.getElementById(id + 'Value').textContent = e.target.value + '%';
+                });
+            });
+
+            // Search
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                const search = e.target.value.toLowerCase();
+                const filtered = modelsData.filter(m => 
+                    m.name.toLowerCase().includes(search) ||
+                    m.company.toLowerCase().includes(search)
+                );
+                renderTable(filtered);
+            });
+
+            // Filter
+            document.getElementById('filterLicense').addEventListener('change', (e) => {
+                const filter = e.target.value;
+                if (!filter) {
+                    renderTable();
+                } else {
+                    const filtered = modelsData.filter(m => {
+                        if (filter === 'Other') return !m.license.includes('Proprietary') && 
+                            !m.license.includes('Apache') && !m.license.includes('MIT');
+                        return m.license.includes(filter);
+                    });
+                    renderTable(filtered);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

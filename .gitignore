@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+venv/
+.venv/
+env/
+.env
+
+# PyInstaller
+# These folders are for your local builds and should NOT be in the repository
+dist/
+build/
+*.spec
+
+# IDE files
+.idea/
+.vscode/
