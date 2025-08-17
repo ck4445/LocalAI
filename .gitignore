@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual env
+venv/
+.venv/
+env/
+.env
+
+# PyInstaller local builds
+dist/
+build/
+
+# (Uncomment if you do NOT want to track spec files)
+# *.spec
+
+# ignore beta folder (runtime / UI builds)
+nextversion/
+buildversion/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
