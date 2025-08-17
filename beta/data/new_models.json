@@ -1,0 +1,9 @@
+{
+  "aliases": [
+    {
+      "name": "Llama 3 8B (Friendly Helper)",
+      "base_model": "llama3:latest",
+      "system_prompt": "You are a friendly, step-by-step assistant."
+    }
+  ]
+}

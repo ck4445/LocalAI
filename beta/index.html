@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Local AI Chat — Ollama</title>
+<link id="hljs-dark" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css">
+<link id="hljs-light" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css" disabled>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<aside class="sidebar">
+  <button class="btn" id="newChatBtn" type="button"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg></span> New chat</button>
+  <div class="group-label">Search</div>
+  <div class="item" id="searchChats"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.2-3.2"/></svg></span> Search chats</div>
+  <div class="item" id="memoriesOpen"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20l-3-3H6a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4h12a4 4 0 0 1 4 4v6a4 4 0 0 1-4 4h-3l-3 3z"/></svg></span> Memories</div>
+  <div class="group-label">Chats</div>
+  <div id="chatsList"></div>
+  <footer>
+    <div class="profile" id="profileBox">
+      <div class="avatar" id="avatarInitial">U</div>
+      <div class="meta">
+        <div class="name" id="userName">Click to edit</div>
+        <div class="plan">local</div>
+      </div>
+    </div>
+    <div class="hidden" id="nameEditWrap" style="margin-top:8px;"><input id="nameInput" class="name-edit" placeholder="Your name"/></div>
+    <div style="margin-top:12px;text-align:center;display:none;justify-content:center;gap:8px;">
+      <button id="themeToggleBtn" class="btn-icon" title="Toggle theme" type="button"></button>
+      <button id="animationToggleBtn" class="btn-icon" title="Toggle animation style" type="button"></button>
+    </div>
+  </footer>
+</aside>
+<main class="main">
+  <div class="topbar">
+    <div class="brand">
+      <button class="models" id="modelsBtn" aria-haspopup="true" aria-expanded="false" type="button">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></span>
+        <span class="title" id="modelTitle">Models</span>
+        <span class="icon" style="color:#cfd7ff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6"/></svg></span>
+      </button>
+    </div>
+    <div id="modelsPop" class="models-pop" role="menu" aria-label="Models"></div>
+    <div id="tpsMeter" style="margin-left:auto;color:#9ed0ff;font-variant-numeric:tabular-nums">– tps</div>
+  </div>
+  <section id="home" class="home">
+    <div class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <h1>Your local AI is ready</h1>
+        <p>Powered by Ollama and running on your machine. Private. Fast. Yours.</p>
+      </div>
+    </div>
+    <div class="composer-wrap">
+      <div class="composer" role="region" aria-label="Message composer on home">
+        <div class="ta-row">
+          <textarea id="homeInput" class="focusable" placeholder="Ask anything"></textarea>
+          <div class="actions">
+            <button class="btn-icon" id="homeMicBtn" title="Voice" type="button"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a3 3 0 013 3v7a3 3 0 11-6 0V6a3 3 0 013-3z"/><path d="M19 10v1a7 7 0 01-14 0v-1"/><path d="M12 19v2"/></svg></span></button>
+            <button class="btn-send" id="homeSend" title="Send" type="button"><span class="icon" style="color:white"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></span></button>
+          </div>
+        </div>
+        <div id="contextMeterHome" class="context-meter" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+  <section id="chat" class="chat hidden" role="main" aria-live="polite">
+    <div class="thread" id="thread"><div class="center" id="threadInner"></div></div>
+    <div class="chat-composer">
+      <div class="center">
+        <div class="composer" role="region" aria-label="Message composer in chat">
+          <div class="ta-row">
+            <textarea id="chatInput" class="focusable" placeholder="Ask anything"></textarea>
+            <div class="attach-left">
+              <input id="fileInput" type="file" multiple style="display:none" />
+              <button class="btn-icon" id="chatAttachBtn" title="Attach files" type="button"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span></button>
+            </div>
+            <div class="actions">
+              <button class="btn-icon" id="chatMicBtn" title="Voice" type="button"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a3 3 0 013 3v7a3 3 0 11-6 0V6a3 3 0 013-3z"/><path d="M19 10v1a7 7 0 01-14 0v-1"/><path d="M12 19v2"/></svg></span></button>
+              <button class="btn-send" id="chatSend" title="Send" type="button"><span class="icon" style="color:white"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></span></button>
+            </div>
+          </div>
+        </div>
+        <div id="contextMeterChat" class="context-meter" aria-live="polite"></div>
+        <div id="attachmentsBar" class="attachments-bar" aria-live="polite" style="margin-top:8px"></div>
+        <div class="disclaimer">Local AI can make mistakes. Check important info.</div>
+      </div>
+    </div>
+  </section>
+</main>
+<div class="mem-overlay" id="memOverlay">
+  <div class="mem-modal" role="dialog" aria-modal="true" aria-label="Memories">
+    <div class="mem-head">
+      <div style="display:flex;align-items:center;gap:10px"><strong>Memories</strong> <span id="memCount" style="color:#aab4c6"></span></div>
+      <label class="switch" title="Enable or disable memories"><input id="memToggle" type="checkbox"><span class="track"></span><span id="memToggleLabel" style="color:#d7def0">Enabled</span></label>
+    </div>
+    <div class="mem-body">
+      <div style="display:flex;gap:8px;margin-bottom:10px"><input id="memAddInput" type="text" placeholder='Add memory, e.g. "The user loves dogs."' style="flex:1;padding:10px;border-radius:10px;border:1px solid var(--soft-border);background:#0f1721;color:#e8ecf7"><button id="memAddBtn" class="sm-btn" type="button">Add</button></div>
+      <div id="memList"></div>
+      <div style="text-align:right;margin-top:12px"><button id="memCloseBtn" class="sm-btn" type="button">Close</button></div>
+    </div>
+  </div>
+</div>
+<div class="mem-overlay" id="settingsOverlay">
+  <div class="mem-modal settings-modal" role="dialog" aria-modal="true" aria-label="Settings">
+    <div class="mem-head" style="display:flex;align-items:center;gap:12px;justify-content:space-between">
+      <strong>Settings</strong>
+      <button id="settingsCloseBtn" class="sm-btn" type="button">Close</button>
+    </div>
+    <div class="mem-body" id="settingsBody">
+      <div class="group" style="margin-bottom:16px">
+        <div style="font-weight:600;margin-bottom:6px">General</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <label style="display:flex;align-items:center;gap:8px">Theme
+            <select id="setTheme" class="form-control">
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
+            </select>
+          </label>
+          <label class="switch" title="Toggle interface animations" style="display:inline-flex;align-items:center;gap:8px">
+            <input id="setAnimation" type="checkbox"><span class="track"></span> <span>Interface animations</span>
+          </label>
+          <label style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:6px">Display name
+            <input id="setDisplayName" type="text" class="form-control" placeholder="Your name"/>
+          </label>
+          <label style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:6px">Name the AI should use
+            <input id="setUserNameAI" type="text" class="form-control" placeholder="Optional (can be blank)"/>
+          </label>
+          <label style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:6px">Verbosity
+            <select id="setVerbosity" class="form-control">
+              <option>Very High</option>
+              <option selected>High</option>
+              <option>Medium</option>
+              <option>Low</option>
+              <option>Very Low</option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <div class="group" style="margin-bottom:16px">
+        <div style="font-weight:600;margin-bottom:6px">Models</div>
+        <label>Default model
+          <select id="setDefaultModel" class="form-control" style="width:100%"></select>
+        </label>
+      </div>
+      <div class="group" style="margin-bottom:16px">
+        <div style="font-weight:600;margin-bottom:6px">Personality</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <label class="switch"><input id="setPersEnabled" type="checkbox"><span class="track"></span> <span style="margin-left:6px">Enabled</span></label>
+        </div>
+        <div id="persList" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+        <div id="persPreview" style="margin-top:8px;color:#aab4c6;white-space:pre-wrap"></div>
+      </div>
+      <div class="group" style="margin-bottom:16px">
+        <div style="font-weight:600;margin-bottom:6px">Language</div>
+        <label>Preferred language
+          <select id="setLanguage" class="form-control" style="width:100%"></select>
+        </label>
+      </div>
+      <div class="group">
+        <div style="font-weight:600;margin-bottom:6px">Advanced</div>
+        <label class="switch"><input id="setContextMeter" type="checkbox"><span class="track"></span> <span style="margin-left:6px">Context meter</span></label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/utils.js" defer></script>
+<script src="js/ui.js" defer></script>
+<script src="js/app.js" defer></script>
+
+</body>
+</html>

@@ -4,18 +4,23 @@ __pycache__/
 *.pyo
 *.pyd
 
-# Virtual Environment
+# Virtual env
 venv/
 .venv/
 env/
 .env
 
-# PyInstaller
-# These folders are for your local builds and should NOT be in the repository
+# PyInstaller local builds
 dist/
 build/
-*.spec
 
-# IDE files
+# (Uncomment if you do NOT want to track spec files)
+# *.spec
+
+# IDE
 .idea/
 .vscode/
+
+# OS
+.DS_Store
+Thumbs.db
