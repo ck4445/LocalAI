@@ -45,3 +45,67 @@ Get Windows builds from the GitHub Releases page:
 ```bash
 git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME.git
 cd YOUR_REPOSITORY_NAME
+````
+
+2. Create and activate a virtual environment:
+
+```bash
+python -m venv venv
+# Windows
+venv\Scripts\activate
+# macOS / Linux
+source venv/bin/activate
+```
+
+3. Create `requirements.txt` or use the example below and install dependencies:
+
+```txt
+flask
+waitress
+requests
+python-dotenv
+```
+
+```bash
+pip install -r requirements.txt
+```
+
+4. Configure Ollama access. Install and run Ollama separately according to its docs.
+   Optionally set an environment variable if your app uses one:
+
+```bash
+export OLLAMA_HOST="http://localhost:11434"
+# Windows (PowerShell)
+$env:OLLAMA_HOST="http://localhost:11434"
+```
+
+5. Run the app:
+
+```bash
+python app.py
+# or, for production
+waitress-serve --listen=0.0.0.0:8080 app:app
+```
+
+## Config and data
+
+* Chat history is stored locally in the repo's data folder by default.
+* Review `config.example.env` or the app's config for paths and options.
+
+## Troubleshooting
+
+* If the UI cannot reach models check that Ollama is running and reachable.
+* If dependencies fail, recreate the virtual environment and reinstall.
+* Inspect logs printed to the console for crash details.
+
+## Contributing
+
+Contributions are welcome. Open an issue or submit a pull request. Keep changes small and documented.
+
+## License
+
+Add a license file or replace this with your chosen license. Example: MIT.
+
+## Built with
+
+Python, Waitress, Flask, and Ollama.
