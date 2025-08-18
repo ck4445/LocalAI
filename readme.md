@@ -13,6 +13,8 @@ This project was largely generated with AI. That can introduce code or design is
 Because Chathippo runs locally and relies on local models it reduces remote exposure.  
 Local execution does not eliminate all risk. Review the code before running. Use caution with sensitive data.
 
+Quick Download: https://github.com/ck4445/ChatHippo/releases
+
 ## Features
 
 - Chat with any local Ollama model.
