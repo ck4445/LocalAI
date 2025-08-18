@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>AI Model Store — Local AI</title>
+  <link id="hljs-dark" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css">
+  <link id="hljs-light" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css" disabled>
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    (function(){
+      try {
+        var saved = localStorage.getItem('theme');
+        var theme = saved || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.dataset.theme = theme;
+        var d = document.getElementById('hljs-dark');
+        var l = document.getElementById('hljs-light');
+        if (d && l) { d.disabled = (theme === 'light'); l.disabled = (theme !== 'light'); }
+      } catch(e) {}
+    })();
+  </script>
+  <style>
+    .store { display:flex; flex-direction:column; min-height:100vh; background:var(--bg); color:var(--text); }
+    .topbar .nav-actions { display:flex; align-items:center; gap:8px; margin-left:auto }
+    .btn-pill { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:12px; border:1px solid var(--soft-border); background:#151c26; color:#dfe3ea; cursor:pointer }
+    .btn-pill:hover { background:#18212d }
+    .store-controls { display:flex; gap:10px; align-items:center; padding:12px 16px; border-bottom:1px solid var(--border); background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0)); position:sticky; top:56px; z-index:4 }
+    .store-search { flex:1; min-width:240px; }
+    .store-search input { width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--soft-border); background:#0f1721; color:#e8ecf7 }
+    .store-filters { display:flex; gap:8px; flex-wrap:wrap }
+    .chip { display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; border:1px solid var(--soft-border); background:#101722; color:#cfd5e2; cursor:pointer; user-select:none }
+    .chip[aria-pressed="true"] { background:#16202b; color:#e2e8f0; border-color:#263143 }
+    .store-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:16px; padding:16px }
+    .store-card { background:#0f161f; border:1px solid var(--soft-border); border-radius:16px; display:flex; flex-direction:column; gap:10px; box-shadow:var(--shadow-2); overflow:hidden }
+    .store-card .capsule { height:120px; background:#121a25; display:flex; align-items:flex-end; padding:12px 14px; position:relative }
+    .store-card .capsule .glow { position:absolute; inset:0; opacity:.5; pointer-events:none; background:radial-gradient(60% 60% at 80% 20%, rgba(124,58,237,.35), transparent 60%), radial-gradient(50% 50% at 20% 30%, rgba(0,212,255,.2), transparent 60%) }
+    .store-card .title { font-weight:700; color:#e9ecf7; display:flex; align-items:center; gap:8px; padding:0 14px }
+    .store-card .subtitle { color:var(--muted); font-size:0.9em; padding:0 14px }
+    .store-card .badges { display:flex; gap:8px; flex-wrap:wrap }
+    .badge { font-size:12px; padding:3px 8px; border-radius:999px; border:1px solid var(--soft-border); background:#0c1219; color:#dfe3ea }
+    .store-card .metrics { display:flex; gap:10px; flex-wrap:wrap; color:#cfd5e2; font-size:0.92em; padding:0 14px }
+    .metrics .kv { background:#0c1219; border:1px solid var(--soft-border); padding:6px 8px; border-radius:8px }
+    .install-row { display:flex; align-items:center; gap:10px; padding:0 14px 14px }
+    .install-row .spacer { flex:1 }
+    .progress { height:8px; background:#0c1219; border:1px solid var(--soft-border); border-radius:999px; overflow:hidden }
+    .progress .bar { height:100%; width:0%; background:linear-gradient(90deg,#9c7bff,#7c3aed); transition:width .15s }
+    .muted { color:var(--muted) }
+    .downloads-dock { position:sticky; bottom:0; left:0; right:0; padding:10px 16px; border-top:1px solid var(--border); background:linear-gradient(180deg, rgba(2,6,12,0.3), rgba(2,6,12,0.8)); backdrop-filter:saturate(1.2) blur(6px); display:none }
+    .downloads-dock.visible { display:block }
+    .downloads-list { display:flex; gap:10px; overflow:auto }
+    .dl-item { min-width:280px; background:#0f161f; border:1px solid var(--soft-border); border-radius:12px; padding:10px; color:#cfd5e2 }
+    .dl-item .name { font-weight:600 }
+    .dl-item .row { display:flex; align-items:center; gap:8px }
+    /* Overlay */
+    .store-overlay { position:fixed; inset:0; background:rgba(2, 6, 12, 0.8); display:none; align-items:center; justify-content:center; z-index:80 }
+    .store-overlay.visible { display:flex }
+    .store-modal { width:min(980px, 94vw); max-height:90vh; overflow:auto; border-radius:16px; border:1px solid var(--soft-border); background:#0f161f; box-shadow:var(--shadow-1) }
+    .store-hero { position:relative; height:200px; background:#121a25; display:flex; align-items:flex-end; padding:16px }
+    .store-hero .glow { position:absolute; inset:0; pointer-events:none }
+    .store-hero .meta { position:relative; z-index:1 }
+    .store-hero h2 { margin:0 0 4px; font-size:22px; color:#e9ecf7 }
+    .store-hero .muted { color:#b0bbcd }
+    .store-body { padding:14px 16px 18px }
+    .variants { border:1px solid var(--soft-border); border-radius:12px; overflow:hidden }
+    .variants .row { display:grid; grid-template-columns: 1.2fr .7fr .7fr 1.2fr auto; gap:8px; align-items:center; padding:10px 12px; border-bottom:1px solid rgba(255,255,255,0.05) }
+    .variants .row.header { background:#101722; font-weight:600; color:#cfd5e2 }
+    .variants .row:last-child { border-bottom:0 }
+    .variants .row:hover { background:#0c1219 }
+    /* Light theme overrides specific to store page */
+    [data-theme="light"] .store-card { background:#ffffff; border-color:#e5e7eb }
+    [data-theme="light"] .store-card .capsule { background:#f3f4f6 }
+    [data-theme="light"] .badge { background:#f3f4f6; border-color:#e5e7eb; color:#374151 }
+    [data-theme="light"] .store-card .title { color:#111827 }
+    [data-theme="light"] .store-card .capsule .muted { color:#374151 }
+    [data-theme="light"] .store-card .metrics .kv { background:#f9fafb; border-color:#e5e7eb; color:#374151 }
+    [data-theme="light"] .btn-pill { background:#ffffff; border-color:#e5e7eb; color:#111827 }
+    [data-theme="light"] .btn-pill:hover { background:#eef2ff; border-color:#c7d2fe; color:#1e3a8a }
+    [data-theme="light"] .progress { background:#f3f4f6; border-color:#e5e7eb }
+    [data-theme="light"] .downloads-dock { background:linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.95)); border-top:1px solid #e5e7eb }
+    [data-theme="light"] .dl-item { background:#ffffff; border-color:#e5e7eb; color:#374151 }
+    [data-theme="light"] .store-overlay { background:rgba(17,24,39,0.25) }
+    [data-theme="light"] .store-modal { background:#ffffff; border-color:#e5e7eb }
+    [data-theme="light"] .store-hero { background:#f3f4f6 }
+    [data-theme="light"] .store-hero .muted { color:#4b5563 }
+    [data-theme="light"] .store-card .metrics { color:#374151 }
+    [data-theme="light"] .variants { border-color:#e5e7eb }
+    [data-theme="light"] .variants .row { border-bottom:1px solid rgba(0,0,0,0.06) }
+    [data-theme="light"] .variants .row.header { background:#f9fafb; color:#374151 }
+    [data-theme="light"] .variants .row:hover { background:#f3f4f6 }
+    [data-theme="light"] .store-search input { background:#ffffff; border:1px solid #e5e7eb; color:#111827 }
+    [data-theme="light"] .chip { background:#ffffff; border-color:#e5e7eb; color:#374151 }
+    [data-theme="light"] .chip[aria-pressed="true"] { background:#eef2ff; border-color:#c7d2fe; color:#1e3a8a }
+  </style>
+</head>
+<body class="store">
+  <div class="topbar">
+    <div class="brand">
+      <span class="models" style="cursor:default"><span class="icon"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></span><span class="title">Model Store</span></span>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-pill" onclick="location.href='index.html'" type="button"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 18l-6-6 6-6"/></svg></span> Back to Chat</button>
+    </div>
+  </div>
+  <div class="store-controls">
+    <div class="store-search"><input id="searchInput" type="search" placeholder="Search models, companies, families" /></div>
+    <div class="store-filters" role="group" aria-label="Filters">
+      <div class="chip" data-filter="all" aria-pressed="true">All</div>
+      <div class="chip" data-filter="multimodal">Multimodal</div>
+      <div class="chip" data-filter="reasoning">Reasoning</div>
+      <div class="chip" data-filter="embeddings">Embeddings</div>
+      <div class="chip" data-filter="assistant">Assistant</div>
+      <div class="chip" data-filter="installed">Installed</div>
+    </div>
+  </div>
+  <div id="storeGrid" class="store-grid" aria-live="polite"></div>
+  <div id="downloadsDock" class="downloads-dock">
+    <div class="downloads-list" id="downloadsList"></div>
+  </div>
+  <div id="storeOverlay" class="store-overlay" role="dialog" aria-modal="true" aria-label="Model details">
+    <div class="store-modal">
+      <div class="store-hero">
+        <div class="glow" id="ovGlow"></div>
+        <div class="meta">
+          <h2 id="ovTitle">Model Family</h2>
+          <div class="muted" id="ovSubtitle">Company · Tags</div>
+        </div>
+        <div style="margin-left:auto; z-index:1"><button class="btn-pill" id="ovClose" type="button">Close</button></div>
+      </div>
+      <div class="store-body">
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px" id="ovBadges"></div>
+        <div class="variants" id="ovVariants"></div>
+      </div>
+    </div>
+  </div>
+  <script src="js/model-store.js"></script>
+</body>
+</html>

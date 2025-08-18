@@ -18,8 +18,7 @@ build/
 # *.spec
 
 # ignore beta folder (runtime / UI builds)
-nextversion/
-buildversion/
+versions/
 
 # IDE
 .idea/
