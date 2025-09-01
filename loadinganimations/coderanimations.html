@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30 Professional & Sleek Loading Animations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 10px;
+            font-weight: 300;
+            font-size: 2.5em;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+            font-weight: 200;
+            letter-spacing: 1px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .loader-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .loader-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .loader-title {
+            margin-top: 20px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        .loader-wrapper {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* 1. Minimalist Spinner */
+        .minimal-spinner {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #4a9eff;
+            border-radius: 50%;
+            animation: minimalSpin 0.8s linear infinite;
+        }
+        @keyframes minimalSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 2. Corporate Dots */
+        .corporate-dots {
+            display: flex;
+            gap: 8px;
+        }
+        .corporate-dots span {
+            width: 8px;
+            height: 8px;
+            background: #4a9eff;
+            border-radius: 50%;
+            animation: corporatePulse 1.5s infinite ease-in-out;
+        }
+        .corporate-dots span:nth-child(1) { animation-delay: 0s; }
+        .corporate-dots span:nth-child(2) { animation-delay: 0.15s; }
+        .corporate-dots span:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes corporatePulse {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1.2); opacity: 1; }
+        }
+
+        /* 3. Progress Arc */
+        .progress-arc {
+            width: 50px;
+            height: 50px;
+            position: relative;
+        }
+        .progress-arc svg {
+            transform: rotate(-90deg);
+        }
+        .progress-arc circle {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 3;
+        }
+        .progress-arc .progress {
+            stroke: #4a9eff;
+            stroke-dasharray: 125.6;
+            stroke-dashoffset: 125.6;
+            animation: progressFill 2s ease-in-out infinite;
+        }
+        @keyframes progressFill {
+            0%, 100% { stroke-dashoffset: 125.6; }
+            50% { stroke-dashoffset: 0; }
+        }
+
+        /* 4. Data Stream */
+        .data-stream {
+            width: 60px;
+            height: 40px;
+            position: relative;
+        }
+        .data-bit {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00d4ff;
+            border-radius: 50%;
+            animation: dataFlow 2s infinite linear;
+        }
+        .data-bit:nth-child(1) { left: 0; animation-delay: 0s; }
+        .data-bit:nth-child(2) { left: 0; animation-delay: 0.4s; }
+        .data-bit:nth-child(3) { left: 0; animation-delay: 0.8s; }
+        .data-bit:nth-child(4) { left: 0; animation-delay: 1.2s; }
+        .data-bit:nth-child(5) { left: 0; animation-delay: 1.6s; }
+        @keyframes dataFlow {
+            0% { transform: translateX(0) translateY(0); opacity: 0; }
+            25% { opacity: 1; }
+            50% { transform: translateX(30px) translateY(-10px); }
+            75% { opacity: 1; }
+            100% { transform: translateX(60px) translateY(0); opacity: 0; }
+        }
+
+        /* 5. Gradient Bar */
+        .gradient-bar {
+            width: 80px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .gradient-fill {
+            height: 100%;
+            width: 40%;
+            background: linear-gradient(90deg, #4a9eff, #00d4ff);
+            border-radius: 2px;
+            animation: gradientSlide 1.5s ease-in-out infinite;
+        }
+        @keyframes gradientSlide {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(250%); }
+        }
+
+        /* 6. Morphing Square */
+        .morphing-square {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            animation: squareMorph 2s infinite;
+        }
+        @keyframes squareMorph {
+            0%, 100% { border-radius: 0%; transform: rotate(0deg); }
+            25% { border-radius: 50%; transform: rotate(90deg); }
+            50% { border-radius: 0%; transform: rotate(180deg); }
+            75% { border-radius: 50%; transform: rotate(270deg); }
+        }
+
+        /* 7. Network Nodes */
+        .network-nodes {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+        .node {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #4a9eff;
+            border-radius: 50%;
+        }
+        .node:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); }
+        .node:nth-child(2) { top: 50%; left: 0; transform: translateY(-50%); }
+        .node:nth-child(3) { bottom: 0; left: 50%; transform: translateX(-50%); }
+        .node:nth-child(4) { top: 50%; right: 0; transform: translateY(-50%); }
+        .node-line {
+            position: absolute;
+            background: #4a9eff;
+            opacity: 0;
+            animation: nodePulse 2s infinite;
+        }
+        .node-line:nth-child(5) {
+            width: 100%;
+            height: 1px;
+            top: 50%;
+            left: 0;
+        }
+        .node-line:nth-child(6) {
+            width: 1px;
+            height: 100%;
+            top: 0;
+            left: 50%;
+            animation-delay: 1s;
+        }
+        @keyframes nodePulse {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 0.5; transform: scale(1); }
+        }
+
+        /* 8. Hexagon Loader */
+        .hexagon-loader {
+            width: 40px;
+            height: 40px;
+            position: relative;
+            animation: hexRotate 2s linear infinite;
+        }
+        .hexagon {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        .hexagon::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #4a9eff;
+            clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+        }
+        @keyframes hexRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 9. Dashboard Metrics */
+        .dashboard-metrics {
+            display: flex;
+            gap: 3px;
+            align-items: flex-end;
+        }
+        .metric-bar {
+            width: 8px;
+            background: linear-gradient(to top, #4a9eff, #00d4ff);
+            animation: metricGrow 1.5s infinite ease-in-out;
+        }
+        .metric-bar:nth-child(1) { height: 20px; animation-delay: 0s; }
+        .metric-bar:nth-child(2) { height: 35px; animation-delay: 0.1s; }
+        .metric-bar:nth-child(3) { height: 25px; animation-delay: 0.2s; }
+        .metric-bar:nth-child(4) { height: 40px; animation-delay: 0.3s; }
+        .metric-bar:nth-child(5) { height: 30px; animation-delay: 0.4s; }
+        @keyframes metricGrow {
+            0%, 100% { transform: scaleY(0.6); }
+            50% { transform: scaleY(1); }
+        }
+
+        /* 10. Infinity Loop */
+        .infinity-loop {
+            width: 60px;
+            height: 30px;
+            position: relative;
+        }
+        .infinity-loop svg {
+            width: 100%;
+            height: 100%;
+        }
+        .infinity-path {
+            fill: none;
+            stroke: #4a9eff;
+            stroke-width: 3;
+            stroke-dasharray: 141.5;
+            stroke-dashoffset: 0;
+            animation: infinityDraw 2s linear infinite;
+        }
+        @keyframes infinityDraw {
+            from { stroke-dashoffset: 141.5; }
+            to { stroke-dashoffset: 0; }
+        }
+
+        /* 11. Cube Rotation */
+        .cube-3d {
+            width: 40px;
+            height: 40px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: cubeRotate 2s infinite linear;
+        }
+        .cube-face {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: rgba(74, 158, 255, 0.8);
+            border: 1px solid #4a9eff;
+        }
+        .cube-face:nth-child(1) { transform: rotateY(0deg) translateZ(20px); }
+        .cube-face:nth-child(2) { transform: rotateY(90deg) translateZ(20px); }
+        .cube-face:nth-child(3) { transform: rotateY(180deg) translateZ(20px); }
+        .cube-face:nth-child(4) { transform: rotateY(-90deg) translateZ(20px); }
+        .cube-face:nth-child(5) { transform: rotateX(90deg) translateZ(20px); }
+        .cube-face:nth-child(6) { transform: rotateX(-90deg) translateZ(20px); }
+        @keyframes cubeRotate {
+            from { transform: rotateX(0deg) rotateY(0deg); }
+            to { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        /* 12. Wave Form */
+        .wave-form {
+            width: 80px;
+            height: 40px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .wave-line {
+            width: 3px;
+            height: 100%;
+            background: #00d4ff;
+            animation: waveOscillate 1s infinite ease-in-out;
+        }
+        .wave-line:nth-child(1) { animation-delay: 0s; }
+        .wave-line:nth-child(2) { animation-delay: 0.1s; }
+        .wave-line:nth-child(3) { animation-delay: 0.2s; }
+        .wave-line:nth-child(4) { animation-delay: 0.3s; }
+        .wave-line:nth-child(5) { animation-delay: 0.4s; }
+        .wave-line:nth-child(6) { animation-delay: 0.5s; }
+        .wave-line:nth-child(7) { animation-delay: 0.6s; }
+        .wave-line:nth-child(8) { animation-delay: 0.7s; }
+        @keyframes waveOscillate {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+        }
+
+        /* 13. Shield Security */
+        .shield-loader {
+            width: 40px;
+            height: 45px;
+            position: relative;
+        }
+        .shield {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #4a9eff, #667eea);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            animation: shieldPulse 2s infinite;
+        }
+        .shield::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 20px;
+            animation: checkFade 2s infinite;
+        }
+        @keyframes shieldPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        @keyframes checkFade {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        /* 14. Blockchain Links */
+        .blockchain {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        .block {
+            width: 12px;
+            height: 12px;
+            background: #4a9eff;
+            animation: blockSlide 2s infinite;
+        }
+        .chain-link {
+            width: 8px;
+            height: 2px;
+            background: #4a9eff;
+            animation: linkFade 2s infinite;
+        }
+        @keyframes blockSlide {
+            0%, 100% { transform: translateX(0); opacity: 0.5; }
+            50% { transform: translateX(5px); opacity: 1; }
+        }
+        @keyframes linkFade {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* 15. Satellite Orbit */
+        .satellite-orbit {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+        .orbit-path {
+            width: 100%;
+            height: 100%;
+            border: 1px solid rgba(74, 158, 255, 0.3);
+            border-radius: 50%;
+            position: absolute;
+        }
+        .satellite {
+            width: 8px;
+            height: 8px;
+            background: #4a9eff;
+            border-radius: 50%;
+            position: absolute;
+            top: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: satelliteOrbit 2s linear infinite;
+        }
+        @keyframes satelliteOrbit {
+            from { transform: translateX(-50%) rotate(0deg) translateX(30px) rotate(0deg); }
+            to { transform: translateX(-50%) rotate(360deg) translateX(30px) rotate(-360deg); }
+        }
+
+        /* 16. Code Brackets */
+        .code-brackets {
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            color: #4a9eff;
+            display: flex;
+            gap: 10px;
+        }
+        .bracket {
+            animation: bracketPulse 1.5s infinite;
+        }
+        .bracket:nth-child(2) {
+            animation-delay: 0.75s;
+        }
+        @keyframes bracketPulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* 17. Server Stack */
+        .server-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .server-layer {
+            width: 50px;
+            height: 8px;
+            background: linear-gradient(90deg, #4a9eff, #667eea);
+            border-radius: 2px;
+            animation: serverGlow 2s infinite;
+        }
+        .server-layer:nth-child(1) { animation-delay: 0s; }
+        .server-layer:nth-child(2) { animation-delay: 0.2s; }
+        .server-layer:nth-child(3) { animation-delay: 0.4s; }
+        .server-layer:nth-child(4) { animation-delay: 0.6s; }
+        @keyframes serverGlow {
+            0%, 100% { opacity: 0.3; transform: scaleX(0.95); }
+            50% { opacity: 1; transform: scaleX(1); }
+        }
+
+        /* 18. Diamond Spinner */
+        .diamond-spinner {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4a9eff, #00d4ff);
+            transform: rotate(45deg);
+            animation: diamondSpin 1.5s infinite ease-in-out;
+        }
+        @keyframes diamondSpin {
+            0%, 100% { transform: rotate(45deg) scale(1); }
+            50% { transform: rotate(225deg) scale(0.8); }
+        }
+
+        /* 19. Tech Grid */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 12px);
+            grid-template-rows: repeat(3, 12px);
+            gap: 4px;
+        }
+        .grid-cell {
+            background: #4a9eff;
+            animation: cellFade 1.5s infinite;
+        }
+        .grid-cell:nth-child(1) { animation-delay: 0s; }
+        .grid-cell:nth-child(2) { animation-delay: 0.1s; }
+        .grid-cell:nth-child(3) { animation-delay: 0.2s; }
+        .grid-cell:nth-child(4) { animation-delay: 0.3s; }
+        .grid-cell:nth-child(5) { animation-delay: 0.4s; }
+        .grid-cell:nth-child(6) { animation-delay: 0.5s; }
+        .grid-cell:nth-child(7) { animation-delay: 0.6s; }
+        .grid-cell:nth-child(8) { animation-delay: 0.7s; }
+        .grid-cell:nth-child(9) { animation-delay: 0.8s; }
+        @keyframes cellFade {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        /* 20. Analytics Pulse */
+        .analytics-pulse {
+            width: 60px;
+            height: 40px;
+            position: relative;
+        }
+        .pulse-line {
+            stroke: #4a9eff;
+            stroke-width: 2;
+            fill: none;
+            stroke-dasharray: 150;
+            stroke-dashoffset: 150;
+            animation: pulseDraw 2s infinite;
+        }
+        @keyframes pulseDraw {
+            to { stroke-dashoffset: -150; }
+        }
+
+        /* 21. Cloud Sync */
+        .cloud-sync {
+            width: 50px;
+            height: 35px;
+            position: relative;
+        }
+        .cloud {
+            width: 100%;
+            height: 100%;
+            background: #4a9eff;
+            border-radius: 100px;
+            position: relative;
+            animation: cloudFloat 2s infinite ease-in-out;
+        }
+        .cloud::before {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background: #4a9eff;
+            border-radius: 50%;
+            top: -10px;
+            left: 10px;
+        }
+        .sync-arrow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 16px;
+            animation: syncRotate 2s infinite linear;
+        }
+        @keyframes cloudFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        @keyframes syncRotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* 22. Fingerprint Scan */
+        .fingerprint-scan {
+            width: 50px;
+            height: 50px;
+            position: relative;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        .print-ring {
+            position: absolute;
+            border: 2px solid #4a9eff;
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+        .print-ring:nth-child(1) { width: 20%; height: 20%; top: 40%; left: 40%; }
+        .print-ring:nth-child(2) { width: 40%; height: 40%; top: 30%; left: 30%; }
+        .print-ring:nth-child(3) { width: 60%; height: 60%; top: 20%; left: 20%; }
+        .print-ring:nth-child(4) { width: 80%; height: 80%; top: 10%; left: 10%; }
+        .print-ring:nth-child(5) { width: 100%; height: 100%; top: 0; left: 0; }
+        .scan-beam {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #4a9eff, transparent);
+            animation: beamScan 2s infinite;
+        }
+        @keyframes beamScan {
+            0%, 100% { top: 0; opacity: 0; }
+            50% { top: 50%; opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        /* 23. Quantum Computing */
+        .quantum-compute {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+        .qubit {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid #4a9eff;
+            border-radius: 50%;
+            animation: qubitRotate 3s infinite linear;
+        }
+        .qubit:nth-child(1) { transform: rotateX(0deg); }
+        .qubit:nth-child(2) { transform: rotateX(60deg); animation-delay: 1s; }
+        .qubit:nth-child(3) { transform: rotateX(120deg); animation-delay: 2s; }
+        @keyframes qubitRotate {
+            from { transform: rotateY(0deg) rotateX(var(--rotation, 0deg)); }
+            to { transform: rotateY(360deg) rotateX(var(--rotation, 0deg)); }
+        }
+
+        /* 24. Terminal Cursor */
+        .terminal-cursor {
+            font-family: 'Courier New', monospace;
+            font-size: 20px;
+            color: #00ff00;
+        }
+        .terminal-cursor::before {
+            content: '> ';
+            color: #4a9eff;
+        }
+        .terminal-cursor::after {
+            content: '_';
+            animation: terminalBlink 1s infinite;
+        }
+        @keyframes terminalBlink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* 25. API Endpoints */
+        .api-endpoints {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .endpoint {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .method {
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: bold;
+            color: white;
+            border-radius: 2px;
+            animation: methodPulse 2s infinite;
+        }
+        .method.get { background: #4caf50; animation-delay: 0s; }
+        .method.post { background: #2196f3; animation-delay: 0.5s; }
+        .method.put { background: #ff9800; animation-delay: 1s; }
+        @keyframes methodPulse {
+            0%, 100% { opacity: 0.3; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        /* 26. Binary Matrix */
+        .binary-matrix {
+            display: grid;
+            grid-template-columns: repeat(5, 12px);
+            gap: 2px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #00ff00;
+        }
+        .binary-digit {
+            animation: digitFlip 2s infinite;
+        }
+        .binary-digit:nth-child(odd) { animation-delay: 0s; }
+        .binary-digit:nth-child(even) { animation-delay: 1s; }
+        @keyframes digitFlip {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* 27. Radar Sweep */
+        .radar-sweep {
+            width: 60px;
+            height: 60px;
+            position: relative;
+            border: 2px solid rgba(74, 158, 255, 0.3);
+            border-radius: 50%;
+        }
+        .radar-line {
+            position: absolute;
+            width: 50%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #4a9eff);
+            top: 50%;
+            left: 50%;
+            transform-origin: left center;
+            animation: radarSweep 2s linear infinite;
+        }
+        .radar-dot {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00ff00;
+            border-radius: 50%;
+            animation: dotPing 2s infinite;
+        }
+        .radar-dot:nth-child(2) { top: 20%; left: 60%; animation-delay: 0.5s; }
+        .radar-dot:nth-child(3) { top: 70%; left: 30%; animation-delay: 1s; }
+        @keyframes radarSweep {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes dotPing {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        /* 28. Crypto Key */
+        .crypto-key {
+            width: 60px;
+            height: 30px;
+            position: relative;
+        }
+        .key-shape {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #4a9eff;
+            border-radius: 50%;
+            position: absolute;
+            left: 0;
+            animation: keyRotate 2s infinite;
+        }
+        .key-teeth {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 3px;
+            background: #4a9eff;
+        }
+        .key-teeth::before,
+        .key-teeth::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #4a9eff;
+            right: 0;
+        }
+        .key-teeth::before { top: -8px; }
+        .key-teeth::after { bottom: -8px; }
+        @keyframes keyRotate {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
+        }
+
+        /* 29. Neural Network */
+        .neural-network {
+            width: 80px;
+            height: 60px;
+            position: relative;
+        }
+        .neuron-layer {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .neuron-layer:nth-child(1) { left: 0; top: 15px; }
+        .neuron-layer:nth-child(2) { left: 35px; top: 5px; }
+        .neuron-layer:nth-child(3) { right: 0; top: 15px; }
+        .neuron {
+            width: 6px;
+            height: 6px;
+            background: #4a9eff;
+            border-radius: 50%;
+            animation: neuronFire 2s infinite;
+        }
+        .neuron-layer:nth-child(1) .neuron { animation-delay: 0s; }
+        .neuron-layer:nth-child(2) .neuron { animation-delay: 0.5s; }
+        .neuron-layer:nth-child(3) .neuron { animation-delay: 1s; }
+        @keyframes neuronFire {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* 30. Holographic Display */
+        .holographic {
+            width: 60px;
+            height: 60px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: holoRotate 3s infinite linear;
+        }
+        .holo-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid;
+            transform: rotateX(70deg);
+        }
+        .holo-layer:nth-child(1) {
+            border-color: rgba(74, 158, 255, 0.8);
+            animation: holoFloat 2s infinite ease-in-out;
+        }
+        .holo-layer:nth-child(2) {
+            border-color: rgba(0, 212, 255, 0.6);
+            transform: rotateX(70deg) translateZ(10px);
+            animation: holoFloat 2s infinite ease-in-out 0.2s;
+        }
+        .holo-layer:nth-child(3) {
+            border-color: rgba(102, 126, 234, 0.4);
+            transform: rotateX(70deg) translateZ(20px);
+            animation: holoFloat 2s infinite ease-in-out 0.4s;
+        }
+        @keyframes holoRotate {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+        @keyframes holoFloat {
+            0%, 100% { transform: rotateX(70deg) translateZ(var(--z, 0px)); }
+            50% { transform: rotateX(70deg) translateZ(calc(var(--z, 0px) + 5px)); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PROFESSIONAL LOADING ANIMATIONS</h1>
+        <p class="subtitle">Enterprise-Grade Sleek Loaders</p>
+        
+        <div class="grid">
+            <!-- 1. Minimalist Spinner -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="minimal-spinner"></div>
+                </div>
+                <div class="loader-title">1. Minimalist Spinner</div>
+            </div>
+
+            <!-- 2. Corporate Dots -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="corporate-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+                <div class="loader-title">2. Corporate Dots</div>
+            </div>
+
+            <!-- 3. Progress Arc -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="progress-arc">
+                        <svg width="50" height="50">
+                            <circle cx="25" cy="25" r="20"/>
+                            <circle class="progress" cx="25" cy="25" r="20"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="loader-title">3. Progress Arc</div>
+            </div>
+
+            <!-- 4. Data Stream -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="data-stream">
+                        <div class="data-bit"></div>
+                        <div class="data-bit"></div>
+                        <div class="data-bit"></div>
+                        <div class="data-bit"></div>
+                        <div class="data-bit"></div>
+                    </div>
+                </div>
+                <div class="loader-title">4. Data Stream</div>
+            </div>
+
+            <!-- 5. Gradient Bar -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="gradient-bar">
+                        <div class="gradient-fill"></div>
+                    </div>
+                </div>
+                <div class="loader-title">5. Gradient Bar</div>
+            </div>
+
+            <!-- 6. Morphing Square -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="morphing-square"></div>
+                </div>
+                <div class="loader-title">6. Morphing Square</div>
+            </div>
+
+            <!-- 7. Network Nodes -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="network-nodes">
+                        <div class="node"></div>
+                        <div class="node"></div>
+                        <div class="node"></div>
+                        <div class="node"></div>
+                        <div class="node-line"></div>
+                        <div class="node-line"></div>
+                    </div>
+                </div>
+                <div class="loader-title">7. Network Nodes</div>
+            </div>
+
+            <!-- 8. Hexagon Loader -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="hexagon-loader">
+                        <div class="hexagon"></div>
+                    </div>
+                </div>
+                <div class="loader-title">8. Hexagon Loader</div>
+            </div>
+
+            <!-- 9. Dashboard Metrics -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="dashboard-metrics">
+                        <div class="metric-bar"></div>
+                        <div class="metric-bar"></div>
+                        <div class="metric-bar"></div>
+                        <div class="metric-bar"></div>
+                        <div class="metric-bar"></div>
+                    </div>
+                </div>
+                <div class="loader-title">9. Dashboard Metrics</div>
+            </div>
+
+            <!-- 10. Infinity Loop -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="infinity-loop">
+                        <svg viewBox="0 0 60 30">
+                            <path class="infinity-path" d="M15,15 C15,7 7,7 7,15 C7,23 15,23 15,15 L45,15 C45,23 53,23 53,15 C53,7 45,7 45,15"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="loader-title">10. Infinity Loop</div>
+            </div>
+
+            <!-- 11. Cube Rotation -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="cube-3d">
+                        <div class="cube-face"></div>
+                        <div class="cube-face"></div>
+                        <div class="cube-face"></div>
+                        <div class="cube-face"></div>
+                        <div class="cube-face"></div>
+                        <div class="cube-face"></div>
+                    </div>
+                </div>
+                <div class="loader-title">11. 3D Cube</div>
+            </div>
+
+            <!-- 12. Wave Form -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="wave-form">
+                        <div class="wave-line"></div>
+                        <div class="wave-line"></div>
+                        <div class="wave-line"></div>
+                        <div class="wave-line"></div>
+                        <div class="wave-line"></div>
+                        <div class="wave-line"></div>
+                        <div class="wave-line"></div>
+                        <div class="wave-line"></div>
+                    </div>
+                </div>
+                <div class="loader-title">12. Wave Form</div>
+            </div>
+
+            <!-- 13. Shield Security -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="shield-loader">
+                        <div class="shield"></div>
+                    </div>
+                </div>
+                <div class="loader-title">13. Security Shield</div>
+            </div>
+
+            <!-- 14. Blockchain -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="blockchain">
+                        <div class="block"></div>
+                        <div class="chain-link"></div>
+                        <div class="block"></div>
+                        <div class="chain-link"></div>
+                        <div class="block"></div>
+                    </div>
+                </div>
+                <div class="loader-title">14. Blockchain</div>
+            </div>
+
+            <!-- 15. Satellite Orbit -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="satellite-orbit">
+                        <div class="orbit-path"></div>
+                        <div class="satellite"></div>
+                    </div>
+                </div>
+                <div class="loader-title">15. Satellite Orbit</div>
+            </div>
+
+            <!-- 16. Code Brackets -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="code-brackets">
+                        <span class="bracket">{</span>
+                        <span class="bracket">}</span>
+                    </div>
+                </div>
+                <div class="loader-title">16. Code Brackets</div>
+            </div>
+
+            <!-- 17. Server Stack -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="server-stack">
+                        <div class="server-layer"></div>
+                        <div class="server-layer"></div>
+                        <div class="server-layer"></div>
+                        <div class="server-layer"></div>
+                    </div>
+                </div>
+                <div class="loader-title">17. Server Stack</div>
+            </div>
+
+            <!-- 18. Diamond Spinner -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="diamond-spinner"></div>
+                </div>
+                <div class="loader-title">18. Diamond Spinner</div>
+            </div>
+
+            <!-- 19. Tech Grid -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="tech-grid">
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                    </div>
+                </div>
+                <div class="loader-title">19. Tech Grid</div>
+            </div>
+
+            <!-- 20. Analytics Pulse -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="analytics-pulse">
+                        <svg width="60" height="40">
+                            <polyline class="pulse-line" points="0,20 10,20 15,10 20,30 25,15 30,25 35,20 45,20 50,10 55,30 60,20"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="loader-title">20. Analytics Pulse</div>
+            </div>
+
+            <!-- 21. Cloud Sync -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="cloud-sync">
+                        <div class="cloud"></div>
+                        <div class="sync-arrow">⟳</div>
+                    </div>
+                </div>
+                <div class="loader-title">21. Cloud Sync</div>
+            </div>
+
+            <!-- 22. Fingerprint Scan -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="fingerprint-scan">
+                        <div class="print-ring"></div>
+                        <div class="print-ring"></div>
+                        <div class="print-ring"></div>
+                        <div class="print-ring"></div>
+                        <div class="print-ring"></div>
+                        <div class="scan-beam"></div>
+                    </div>
+                </div>
+                <div class="loader-title">22. Biometric Scan</div>
+            </div>
+
+            <!-- 23. Quantum Computing -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="quantum-compute">
+                        <div class="qubit" style="--rotation: 0deg;"></div>
+                        <div class="qubit" style="--rotation: 60deg;"></div>
+                        <div class="qubit" style="--rotation: 120deg;"></div>
+                    </div>
+                </div>
+                <div class="loader-title">23. Quantum Computing</div>
+            </div>
+
+            <!-- 24. Terminal Cursor -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="terminal-cursor">loading</div>
+                </div>
+                <div class="loader-title">24. Terminal Cursor</div>
+            </div>
+
+            <!-- 25. API Endpoints -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="api-endpoints">
+                        <div class="endpoint">
+                            <span class="method get">GET</span>
+                        </div>
+                        <div class="endpoint">
+                            <span class="method post">POST</span>
+                        </div>
+                        <div class="endpoint">
+                            <span class="method put">PUT</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="loader-title">25. API Endpoints</div>
+            </div>
+
+            <!-- 26. Binary Matrix -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="binary-matrix">
+                        <span class="binary-digit">1</span>
+                        <span class="binary-digit">0</span>
+                        <span class="binary-digit">1</span>
+                        <span class="binary-digit">1</span>
+                        <span class="binary-digit">0</span>
+                        <span class="binary-digit">0</span>
+                        <span class="binary-digit">1</span>
+                        <span class="binary-digit">0</span>
+                        <span class="binary-digit">1</span>
+                        <span class="binary-digit">1</span>
+                    </div>
+                </div>
+                <div class="loader-title">26. Binary Matrix</div>
+            </div>
+
+            <!-- 27. Radar Sweep -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="radar-sweep">
+                        <div class="radar-line"></div>
+                        <div class="radar-dot"></div>
+                        <div class="radar-dot"></div>
+                    </div>
+                </div>
+                <div class="loader-title">27. Radar Sweep</div>
+            </div>
+
+            <!-- 28. Crypto Key -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="crypto-key">
+                        <div class="key-shape"></div>
+                        <div class="key-teeth"></div>
+                    </div>
+                </div>
+                <div class="loader-title">28. Crypto Key</div>
+            </div>
+
+            <!-- 29. Neural Network -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="neural-network">
+                        <div class="neuron-layer">
+                            <div class="neuron"></div>
+                            <div class="neuron"></div>
+                        </div>
+                        <div class="neuron-layer">
+                            <div class="neuron"></div>
+                            <div class="neuron"></div>
+                            <div class="neuron"></div>
+                        </div>
+                        <div class="neuron-layer">
+                            <div class="neuron"></div>
+                            <div class="neuron"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="loader-title">29. Neural Network</div>
+            </div>
+
+            <!-- 30. Holographic Display -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="holographic">
+                        <div class="holo-layer" style="--z: 0px;"></div>
+                        <div class="holo-layer" style="--z: 10px;"></div>
+                        <div class="holo-layer" style="--z: 20px;"></div>
+                    </div>
+                </div>
+                <div class="loader-title">30. Holographic Display</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Professional hover sound effect simulation
+        document.querySelectorAll('.loader-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            });
+        });
+
+        // Add smooth scroll behavior
+        document.documentElement.style.scrollBehavior = 'smooth';
+    </script>
+</body>
+</html>

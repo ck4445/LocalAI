@@ -1,0 +1,927 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT UI Clone</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --sidebar-bg: #171717;
+            --main-bg: #212121;
+            --modal-bg: #2C2C2C;
+            --modal-sidebar-bg: #212121;
+            --popup-bg: #2A2A2A;
+            --input-bg: #3A3A3A;
+            --input-border: #3A3A3A;
+            --user-prompt-bg: #4F32A3;
+            --send-button-active-bg: #7A60FF;
+            --accent-purple: #9D84FF;
+            --profile-bg: #DE5D83;
+            --text-primary: #ECECEC;
+            --text-secondary: #8E8E8E;
+            --text-placeholder: #6E6E6E;
+            --hover-bg: #2A2A2A;
+            --active-bg: #333333;
+            --border-color: #404040;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--main-bg);
+            color: var(--text-primary);
+            font-size: 14px;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            padding: 8px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 8px;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .new-chat-button {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            background: none;
+            border: 1px solid var(--input-border);
+            color: var(--text-primary);
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 16px;
+            transition: background-color 0.2s;
+        }
+        .new-chat-button:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+        .nav-item:hover { background-color: var(--hover-bg); }
+        .nav-item.active { background-color: var(--active-bg); }
+        .nav-item svg { width: 20px; height: 20px; }
+        
+        .sidebar-middle { flex-grow: 1; overflow-y: auto; padding-top: 24px; }
+        .sidebar-section { margin-bottom: 24px; }
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding: 0 12px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        
+        .sidebar-bottom { padding-top: 8px; border-top: 1px solid var(--input-border); }
+        .user-profile { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; cursor: pointer; }
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--profile-bg);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 69px;
+            padding: 0 24px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .model-selector { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600; cursor: pointer; padding: 8px; border-radius: 8px; }
+        .model-selector:hover { background-color: var(--hover-bg); }
+        .menu-dots { cursor: pointer; color: var(--text-secondary); }
+
+        .model-popup {
+            display: none;
+            position: absolute; top: 60px; left: 16px; width: 280px;
+            background-color: var(--popup-bg); border: 1px solid var(--input-border);
+            border-radius: 12px; padding: 8px; box-shadow: 0 8px 16px rgba(0,0,0,0.3); z-index: 1000;
+        }
+        .model-popup.visible { display: block; }
+        .model-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-radius: 8px; cursor: pointer; transition: background-color 0.2s; }
+        .model-item:hover { background-color: var(--hover-bg); }
+        .model-item.active { background-color: var(--active-bg); }
+        .model-info { display: flex; flex-direction: column; gap: 2px; }
+        .model-name { font-weight: 500; }
+        .model-description { font-size: 12px; color: var(--text-secondary); }
+
+        /* Pills/buttons consistent with app theme */
+        .btn-pill { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:12px; border:1px solid var(--input-border); background:transparent; color:var(--text-primary); cursor:pointer; text-decoration:none }
+        .btn-pill:hover { background: var(--hover-bg); }
+        .btn-pill:disabled { opacity: .6; cursor: default }
+        .btn-mini { padding:4px 8px; font-size:12px; border-radius:10px }
+
+        .chat-view {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .chat-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 0 24px;
+        }
+        
+        .chat-content {
+            width: 100%;
+            max-width: 768px;
+            margin: 0 auto;
+            padding-bottom: 24px;
+        }
+        
+        .welcome-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            width: 100%;
+            max-width: 768px; /* Always wide */
+        }
+        
+        .chat-view.is-empty {
+            justify-content: center;
+            align-items: center;
+        }
+        .chat-view.is-empty .chat-container { display: none; }
+        .chat-view.is-empty .welcome-screen { display: flex; }
+        .chat-view.is-empty .main-footer { padding: 0; }
+
+        .welcome-title {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .chat-message { margin-bottom: 24px; }
+        .message-bubble { max-width: 100%; }
+        .message-bubble p { line-height: 1.7; margin-bottom: 1em; }
+        .message-bubble p:last-child { margin-bottom: 0; }
+        .user-message { display: flex; justify-content: flex-end; }
+        .user-message .message-bubble {
+            background-color: var(--user-prompt-bg);
+            color: white; padding: 12px 16px; border-radius: 18px; font-weight: 500;
+        }
+        
+        .thinking-indicator {
+            display: flex; align-items: center; justify-content: center; gap: 5px; margin: 24px 0;
+        }
+        .thinking-indicator span {
+            width: 8px; height: 8px; background-color: #6E6E6E;
+            border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .thinking-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .thinking-indicator span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+
+        .main-footer { padding: 0 24px 24px 24px; flex-shrink: 0; background-color: var(--main-bg); }
+        .input-area-container { width: 100%; max-width: 768px; margin: 0 auto; }
+        .input-wrapper {
+            background-color: var(--input-bg); border-radius: 20px;
+            padding: 4px 4px 8px 4px; display: flex; flex-direction: column;
+        }
+
+        .chat-input {
+            width: 100%; background: none; border: none;
+            padding: 12px 16px; color: var(--text-primary);
+            font-size: 16px; font-family: 'Inter', sans-serif; resize: none;
+            line-height: 1.5; min-height: 48px;
+        }
+        .chat-input::placeholder { color: var(--text-placeholder); }
+        .chat-input:focus { outline: none; }
+        
+        .input-actions { display: flex; justify-content: space-between; align-items: center; padding: 0 8px; }
+        .actions-left, .actions-right { display: flex; align-items: center; gap: 8px; }
+
+        .input-button {
+            background: none; border: none; color: var(--text-secondary);
+            cursor: pointer; display: flex; align-items: center;
+            justify-content: center; border-radius: 8px; transition: background-color 0.2s;
+            height: 36px;
+        }
+        .input-button:hover { background-color: var(--hover-bg); }
+        
+        .add-button { font-size: 24px; width: 36px; color: var(--text-primary); }
+        .tools-button { gap: 6px; font-weight: 500; color: var(--text-primary); padding: 0 12px; }
+        .mic-button { width: 36px; }
+        .send-button {
+            width: 36px; height: 36px; border-radius: 50%;
+            background-color: var(--user-prompt-bg);
+            color: white; opacity: 0.5; cursor: default;
+        }
+        .send-button.active { opacity: 1; cursor: pointer; background-color: var(--send-button-active-bg); }
+        .send-button svg { transform: rotate(-90deg); }
+        
+        .disclaimer { font-size: 12px; color: var(--text-secondary); text-align: center; margin-top: 12px; }
+
+        /* --- Settings Modal & Dropdowns --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 2000;
+            display: none; align-items: center; justify-content: center;
+        }
+        .modal-overlay.visible { display: flex; }
+
+        .settings-modal {
+            width: 800px; height: 600px;
+            background-color: var(--modal-bg);
+            border-radius: 12px;
+            display: flex;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .settings-sidebar {
+            width: 220px;
+            background-color: var(--modal-sidebar-bg);
+            padding: 16px 8px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .settings-close-btn {
+            background: none; border: none; color: var(--text-secondary);
+            padding: 8px; border-radius: 8px; cursor: pointer;
+            align-self: flex-start; margin-left: 4px; margin-bottom: 16px;
+        }
+        .settings-close-btn:hover { background-color: var(--hover-bg); }
+        
+        .settings-nav-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 12px; border-radius: 8px;
+            cursor: pointer; transition: background-color 0.2s;
+            font-weight: 500;
+        }
+        .settings-nav-item:hover { background-color: var(--hover-bg); }
+        .settings-nav-item.active { background-color: var(--active-bg); color: white; }
+        .settings-nav-item svg { width: 20px; height: 20px; }
+
+        .settings-content {
+            flex-grow: 1;
+            padding: 24px 32px;
+            overflow-y: auto;
+        }
+        .settings-content h2 { font-size: 18px; margin-bottom: 24px; }
+        
+        .setting-row {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; font-size: 14px;
+        }
+        .setting-label { color: var(--text-primary); font-weight: 500; }
+        .setting-description { color: var(--text-secondary); font-size: 12px; line-height: 1.5; margin-top: 8px; max-width: 400px; }
+        .setting-control { display: flex; align-items: center; gap: 8px; position: relative; }
+        
+        .dropdown-imitation {
+            background-color: var(--main-bg); border: 1px solid var(--border-color);
+            padding: 6px 12px; border-radius: 8px; cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .dropdown-imitation .color-swatch { width: 16px; height: 16px; border-radius: 50%; background-color: var(--accent-purple); }
+        
+        .settings-dropdown-popup {
+            display: none;
+            position: absolute; top: 110%; right: 0; width: 200px;
+            background-color: var(--popup-bg); border: 1px solid var(--border-color);
+            border-radius: 8px; padding: 4px; z-index: 2010;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .settings-dropdown-popup.visible { display: block; }
+        .dropdown-option {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 12px; border-radius: 6px; cursor: pointer;
+        }
+        .dropdown-option:hover { background-color: var(--hover-bg); }
+
+        .play-button { background: none; border: 1px solid var(--border-color); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--text-primary); cursor: pointer; }
+
+        .toggle-switch { position: relative; display: inline-block; width: 40px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #4A4A4A; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--accent-purple); }
+        input:checked + .slider:before { transform: translateX(16px); }
+
+        /* --- New: AI Message Actions --- */
+        .ai-message {
+            display: flex;
+            flex-direction: column; /* Stack message bubble and actions */
+            align-items: flex-start; /* Align everything to the left */
+            margin-bottom: 24px; /* Space between messages */
+        }
+
+        .ai-message .message-bubble {
+            background-color: transparent; /* AI message text directly on main background */
+            color: var(--text-primary);
+            padding: 0; /* No explicit padding/background for the bubble itself */
+            border-radius: 0;
+            font-weight: 400;
+            max-width: 100%; /* Take full width for text */
+        }
+
+        .ai-message .message-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px; /* Space between message content and actions */
+            color: var(--text-secondary);
+        }
+
+        .ai-message .message-actions .action-button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px; /* +15% size */
+            height: 28px;
+            border-radius: 4px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .ai-message .message-actions .action-button:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-primary);
+        }
+
+        .ai-message .message-actions .action-button svg {
+            width: 18px; /* +15% icon size */
+            height: 18px;
+            stroke-width: 2; /* Consistent stroke thickness */
+        }
+        /* --- End New: AI Message Actions --- */
+        /* Generic action bar (also used if messages lack ai-message wrapper) */
+        .message-actions { display: flex; gap: 8px; margin-top: 8px; }
+        .action-button { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--border-color); color: var(--text-secondary); cursor: pointer; background: transparent; }
+        .action-button:hover { background: var(--hover-bg); color: var(--text-primary); }
+
+        /* --- Light Mode --- */
+        [data-theme="light"] {
+            --sidebar-bg: #F9F9F9;
+            --main-bg: #FFFFFF;
+            --modal-bg: #FFFFFF;
+            --modal-sidebar-bg: #F9F9F9;
+            --popup-bg: #FFFFFF;
+            --input-bg: #FFFFFF; /* Welcome screen input */
+            --input-border: #E5E5E5;
+            --user-prompt-bg: #F0F4F9;
+            --send-button-active-bg: #191919;
+            --accent-purple: #7A60FF;
+            --text-primary: #1D1D1F;
+            --text-secondary: #6E6E6E;
+            --text-placeholder: #6E6E6E;
+            --hover-bg: #EFEFEF;
+            --active-bg: #E5E5E5;
+            --border-color: #E5E5E5;
+        }
+        
+        [data-theme="light"] body,
+        [data-theme="light"] .settings-modal {
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .welcome-screen .input-wrapper {
+            background-color: var(--main-bg);
+            border: 1px solid var(--border-color);
+        }
+        [data-theme="light"] .welcome-screen .input-wrapper .chat-input {
+            background-color: var(--main-bg); /* Explicitly set for light theme input */
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .main-footer .input-wrapper {
+             background-color: #F0F4F9;
+             border: none;
+        }
+        [data-theme="light"] #main-chat-input {
+            background: #F0F4F9;
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .user-message .message-bubble {
+            background-color: var(--accent-purple); /* Often purple for user in light mode */
+            color: white; /* White text on purple */
+        }
+        
+        [data-theme="light"] .send-button.active {
+            color: white;
+        }
+        
+        [data-theme="light"] .welcome-title {
+            color: var(--text-primary) !important;
+        }
+
+        [data-theme="light"] .model-item.active svg path {
+            stroke: var(--text-primary);
+        }
+
+        [data-theme="light"] #search-input {
+            background: var(--main-bg) !important;
+            border: 1px solid var(--border-color) !important;
+            color: var(--text-primary) !important;
+        }
+
+        [data-theme="light"] .dropdown-imitation {
+            background-color: var(--hover-bg);
+        }
+
+        [data-theme="light"] .thinking-indicator span {
+            background-color: #BDBDBD;
+        }
+        
+        [data-theme="light"] .settings-nav-item.active {
+            color: var(--text-primary);
+        }
+        /* New: Light mode specific styling for AI message bubble */
+        [data-theme="light"] .ai-message .message-bubble {
+            color: var(--text-primary); /* Ensures text is dark in light mode */
+        }
+        /* New: Light mode specific styling for AI message actions (colors handled by vars) */
+        [data-theme="light"] .ai-message .message-actions .action-button {
+            color: var(--text-secondary);
+        }
+        [data-theme="light"] .ai-message .message-actions .action-button:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-primary);
+        }
+
+        /* --- Markdown: Lists & Tables in messages --- */
+        .message-bubble ul,
+        .message-bubble ol {
+            margin: 0.5em 0 1em;
+            padding-left: 1.4em; /* better hanging indent */
+            list-style-position: outside;
+        }
+        .message-bubble ul { list-style-type: disc; }
+        .message-bubble ul ul { list-style-type: circle; }
+        .message-bubble ul ul ul { list-style-type: square; }
+        .message-bubble ol { list-style-type: decimal; }
+        .message-bubble li { margin: 0.25em 0; }
+        .message-bubble li::marker { color: var(--text-secondary); }
+        /* Avoid large paragraph gaps inside list items */
+        .message-bubble li > p { margin: 0.15em 0; }
+
+        /* Tables: clean, compact, and scrollable when wide */
+        .message-bubble table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 0.75em 0 1em;
+            font-size: 0.95em;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden; /* for rounded corners */
+            max-width: 100%;
+            table-layout: fixed; /* ensure cells wrap instead of overflowing */
+        }
+        .message-bubble thead tr { background: var(--hover-bg); }
+        .message-bubble th,
+        .message-bubble td {
+            padding: 8px 12px;
+            text-align: left;
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            white-space: normal; /* allow wrap */
+            word-break: break-word;
+            overflow-wrap: anywhere;
+            vertical-align: top;
+        }
+        .message-bubble th { font-weight: 600; }
+        .message-bubble tr:last-child td { border-bottom: none; }
+        .message-bubble tr td:last-child,
+        .message-bubble tr th:last-child { border-right: none; }
+        .message-bubble tbody tr:nth-child(even) { background-color: rgba(255,255,255,0.03); }
+
+        /* Light theme tweaks for tables */
+        [data-theme="light"] .message-bubble thead tr { background: #f4f4f6; }
+        [data-theme="light"] .message-bubble tbody tr:nth-child(even) { background-color: rgba(0,0,0,0.03); }
+        .provider-badge {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background-color: var(--accent-purple);
+            color: white;
+            margin-left: 8px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+    <script>
+      window.escapeHTML = (s)=> String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+      window.renderMarkdown = (root)=>{};
+    </script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header"><div class="sidebar-logo">ChatGPT 5</div></div>
+            <button class="new-chat-button" id="new-chat-btn">
+                <span>New chat</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </button>
+            <nav class="sidebar-nav">
+              <a href="#" id="search-chats-btn" class="nav-item"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Search chats</span></a>
+              <a href="/model-store.html" class="nav-item" target="_blank"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7h18M3 7l2.5-4h13L21 7M4 7v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 12h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Model Store</span></a>
+            </nav>
+            <div class="sidebar-middle"></div>
+            <div class="sidebar-bottom"><div class="user-profile" id="user-profile-btn"><div class="user-avatar">S</div><div class="user-info"><div class="user-name">MC DForm</div><div class="user-plan" style="color: var(--text-secondary); font-size: 12px;">Plus</div></div></div></div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <div class="model-selector" id="model-selector-btn"><span id="model-name">ChatGPT 5 Thinking</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                <div class="menu-dots" id="open-settings-btn" title="Settings"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 13C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11C18.4477 11 18 11.4477 18 12C18 12.5523 18.4477 13 19 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 13C5.55228 13 6 12.5523 6 12C6 11.4477 5.55228 11 5 11C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                <div class="model-popup" id="model-popup"></div>
+            </header>
+            <div class="chat-view is-empty" id="chat-view">
+                <div class="welcome-screen">
+                  <h1 class="welcome-title" style="color:#ffffff">What's on the agenda today?</h1>
+                  <div class="input-area-container">
+                    <form class="chat-form" id="welcome-chat-form">
+                      <div class="input-wrapper">
+                        <textarea class="chat-input" id="welcome-chat-input" placeholder="Ask anything" rows="1"></textarea>
+                        <div class="input-actions">
+                          <div class="actions-left">
+                            <button type="button" class="input-button add-button">+</button>
+                            <button type="button" class="input-button tools-button">
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 6.2C3 5.03995 3 4.45992 3.21799 4.03831C3.40973 3.67663 3.67663 3.40973 4.03831 3.21799C4.45992 3 5.03995 3 6.2 3H17.8C18.9601 3 19.5401 3 19.9617 3.21799C20.3234 3.40973 20.5903 3.67663 20.782 4.03831C21 4.45992 21 5.03995 21 6.2V17.8C21 18.9601 21 19.5401 20.782 19.9617C20.5903 20.3234 20.3234 20.5903 19.9617 20.782C19.5401 21 18.9601 21 17.8 21H6.2C5.03995 21 4.45992 21 4.03831 20.782C3.67663 20.5903 3.40973 20.3234 3.21799 19.9617C3 19.5401 3 18.9601 3 17.8V6.2Z" stroke="currentColor" stroke-width="2"/><path d="M9 16C10.1046 16 11 15.1046 11 14C11 12.8954 10.1046 12 9 12C7.89543 12 7 12.8954 7 14C7 15.1046 7.89543 16 9 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 12C15.3284 12 16 11.3284 16 10.5C16 9.67157 15.3284 9 14.5 9C13.6716 9 13 9.67157 13 10.5C13 11.3284 13.6716 12 14.5 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              <span>Tools</span>
+                            </button>
+                          </div>
+                          <div class="actions-right">
+                            <button type="button" class="input-button mic-button">
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 1A5 5 0 0 0 7 6v6a5 5 0 0 0 10 0V6a5 5 0 0 0-5-5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 11a7 7 0 0 1-14 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 19v4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <button type="submit" class="input-button send-button" id="welcome-send-button">
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 19L8 12L15 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                    <div class="disclaimer">ChatGPT can make mistakes. Check important info.</div>
+                  </div>
+                </div>
+                <div class="chat-container" id="chat-container"><div class="chat-content" id="chat-content"></div></div>
+                <footer class="main-footer" id="main-footer" style="display:none">
+                  <div class="input-area-container">
+                    <form class="chat-form" id="main-chat-form">
+                      <div class="input-wrapper">
+                        <textarea class="chat-input" id="main-chat-input" placeholder="Ask anything" rows="1"></textarea>
+                        <div class="input-actions">
+                          <div class="actions-left">
+                            <button type="button" class="input-button add-button" title="Attach files">+</button>
+                            <button type="button" class="input-button tools-button">
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 6.2C3 5.03995 3 4.45992 3.21799 4.03831C3.40973 3.67663 3.67663 3.40973 4.03831 3.21799C4.45992 3 5.03995 3 6.2 3H17.8C18.9601 3 19.5401 3 19.9617 3.21799C20.3234 3.40973 20.5903 3.67663 20.782 4.03831C21 4.45992 21 5.03995 21 6.2V17.8C21 18.9601 21 19.5401 20.782 19.9617C20.5903 20.3234 20.3234 20.5903 19.9617 20.782C19.5401 21 18.9601 21 17.8 21H6.2C5.03995 21 4.45992 21 4.03831 20.782C3.67663 20.5903 3.40973 20.3234 3.21799 19.9617C3 19.5401 3 18.9601 3 17.8V6.2Z" stroke="currentColor" stroke-width="2"/><path d="M9 16C10.1046 16 11 15.1046 11 14C11 12.8954 10.1046 12 9 12C7.89543 12 7 12.8954 7 14C7 15.1046 7.89543 16 9 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 12C15.3284 12 16 11.3284 16 10.5C16 9.67157 15.3284 9 14.5 9C13.6716 9 13 9.67157 13 10.5C13 11.3284 13.6716 12 14.5 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              <span>Tools</span>
+                            </button>
+                          </div>
+                          <div class="actions-right">
+                            <button type="button" class="input-button mic-button">
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 1A5 5 0 0 0 7 6v6a5 5 0 0 0 10 0V6a5 5 0 0 0-5-5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 11a7 7 0 0 1-14 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 19v4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <button type="submit" class="input-button send-button" id="main-send-button">
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 19L8 12L15 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                    <div class="disclaimer">ChatGPT can make mistakes. Check important info.</div>
+                  </div>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <!-- Settings Modal HTML -->
+    <div class="modal-overlay" id="settings-modal-overlay">
+        <div class="settings-modal">
+            <aside class="settings-sidebar">
+              <button class="settings-close-btn" id="settings-close-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <div class="settings-nav"><!-- Populated by newui.js --></div>
+            </aside>
+            <main class="settings-content"><!-- Populated by newui.js --></main>
+        </div>
+    </div>
+
+    <!-- Search Overlay -->
+    <div class="modal-overlay" id="search-overlay">
+      <div class="settings-modal" style="max-width:720px;height:520px">
+        <aside class="settings-sidebar" style="width:0;padding:0"></aside>
+        <main class="settings-content">
+          <h2>Search</h2>
+          <div class="setting-row" style="align-items:stretch">
+            <div style="flex:1">
+              <input id="search-input" placeholder="Search chats" style="width:100%;background:var(--main-bg);border:1px solid var(--border-color);border-radius:8px;color:var(--text-primary);padding:10px 12px;font-size:14px"/>
+            </div>
+          </div>
+          <div id="search-results" style="display:flex;flex-direction:column;gap:6px"></div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Hidden global file input for uploads -->
+    <input id="global-file-input" type="file" multiple style="display:none" />
+    <!-- Libraries and app wiring -->
+    <link id="hljs-dark" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css">
+    <link id="hljs-light" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css" disabled>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <script src="js/utils.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- Theme Management ---
+
+        const themeToggleHTML = `
+            <div class="setting-row" id="theme-setting-row">
+                <div>
+                    <div class="setting-label">Theme</div>
+                    <div class="setting-description">Choose between light and dark mode.</div>
+                </div>
+                <div class="setting-control">
+                    <label class="toggle-switch">
+                      <input type="checkbox" id="theme-toggle-checkbox">
+                      <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        `;
+        
+        const themeToggleElement = document.createElement('div');
+        themeToggleElement.innerHTML = themeToggleHTML;
+
+        // Function to apply theme
+        const applyTheme = (theme) => {
+            const darkHljs = document.getElementById('hljs-dark');
+            const lightHljs = document.getElementById('hljs-light');
+            const themeCheckbox = document.getElementById('theme-toggle-checkbox');
+
+            if (theme === 'light') {
+                document.body.dataset.theme = 'light';
+                if(darkHljs) darkHljs.disabled = true;
+                if(lightHljs) lightHljs.disabled = false;
+                if(themeCheckbox) themeCheckbox.checked = false; // Light mode is "off" in this toggle logic
+            } else {
+                // Default to dark theme
+                theme = 'dark';
+                delete document.body.dataset.theme;
+                if(darkHljs) darkHljs.disabled = false;
+                if(lightHljs) lightHljs.disabled = true;
+                if(themeCheckbox) themeCheckbox.checked = true; // Dark mode is "on"
+            }
+            localStorage.setItem('chat-theme', theme);
+        };
+
+        // Load theme from localStorage on initial load
+        const savedTheme = localStorage.getItem('chat-theme') || 'light';
+        applyTheme(savedTheme);
+
+        // Logic to inject the theme toggle into the settings modal
+        const settingsContent = document.querySelector('.settings-content');
+        const observer = new MutationObserver((mutationsList, obs) => {
+            for (const mutation of mutationsList) {
+                if (mutation.type === 'childList') {
+                    const generalHeader = settingsContent.querySelector('h2');
+                    // Check if General section is loaded and our setting is not there yet
+                    if (generalHeader && generalHeader.textContent.trim() === 'General' && !document.getElementById('theme-setting-row')) {
+                        // Found the "General" section, inject our toggle (clone to avoid moving original)
+                        const node = themeToggleElement.firstElementChild ? themeToggleElement.firstElementChild.cloneNode(true) : null;
+                        if (node) generalHeader.insertAdjacentElement('afterend', node);
+
+                        // Set initial state of the checkbox
+                        const themeCheckbox = document.getElementById('theme-toggle-checkbox');
+                        themeCheckbox.checked = (localStorage.getItem('chat-theme') || 'dark') === 'dark';
+
+                        // Add event listener
+                        themeCheckbox.addEventListener('change', (e) => {
+                            applyTheme(e.target.checked ? 'dark' : 'light');
+                        });
+                    }
+                }
+            }
+        });
+
+        if (settingsContent) {
+            observer.observe(settingsContent, { childList: true, subtree: true });
+        }
+    });
+    </script>
+<!-- removed duplicate Settings Modal block to avoid conflicts; newui.js manages one modal above -->
+
+
+<script>
+// Actions under AI responses
+function createActionBar(){
+  const bar = document.createElement('div');
+  bar.className = 'message-actions';
+  bar.innerHTML = `
+    <button class="action-button" data-action="reload" title="Regenerate" aria-label="Regenerate">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M23 4V10H17M1 20V14H7M3.55 9C4.091 7.478 5.068 6.136 6.386 5.112C7.704 4.088 9.29 3.424 10.973 3.198C12.657 2.972 14.381 3.191 15.969 3.834C17.556 4.477 18.932 5.515 19.96 6.849L23 10M1 14L4.04 17.151C5.068 18.485 6.444 19.523 8.031 20.166C9.619 20.809 11.343 21.028 13.027 20.802C14.71 20.576 16.296 19.913 17.614 18.888C18.932 17.864 19.909 16.522 20.45 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <button class="action-button" data-action="copy" title="Copy" aria-label="Copy">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 1H4C2.895 1 2 1.895 2 3V17C2 18.105 2.895 19 4 19H16C17.105 19 18 18.105 18 17V3C18 1.895 17.105 1 16 1Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M20 5H21C22.105 5 23 5.895 23 7V21C23 22.105 22.105 23 21 23H7C5.895 23 5 22.105 5 21V20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <button class="action-button" data-action="speak" title="Read aloud" aria-label="Read aloud">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11 5L6 9H2V15H6L11 19V5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M15.5 8C17.433 8 19 9.567 19 11.5C19 13.433 17.433 15 15.5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M17.828 6.172C20.368 8.712 21 11.5 21 11.5C21 11.5 20.368 14.288 17.828 16.828" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  `;
+  return bar;
+}
+function getMessageText(msg){ const b = msg.querySelector('.message-bubble'); return b ? b.innerText.trim() : ''; }
+function attachActions(msg){
+  if (!msg || msg.dataset.actionsBound) return;
+  if (!msg.dataset.final) return; // only show tools when message finalized
+  const isAI = msg.classList.contains('ai-message') || !msg.classList.contains('user-message');
+  if (!isAI) return;
+  if(!msg.id){ msg.id = 'm_' + Math.random().toString(36).slice(2); }
+  const bar = createActionBar();
+  // Track which message is currently being read aloud
+  if (!window.__aiSpeakState) window.__aiSpeakState = { id: null };
+  bar.addEventListener('click', (e)=>{
+    const btn = e.target.closest('button'); if (!btn) return;
+    const action = btn.dataset.action;
+    if (action==='copy'){
+      const text = getMessageText(msg);
+      navigator.clipboard?.writeText(text);
+    } else if (action==='speak'){
+      const text = getMessageText(msg);
+      if ('speechSynthesis' in window){
+        if (speechSynthesis.speaking && window.__aiSpeakState.id === msg.id){
+          speechSynthesis.cancel();
+          window.__aiSpeakState.id = null;
+          return;
+        }
+        if (speechSynthesis.speaking) speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        const uri = localStorage.getItem('ttsVoiceURI')||'';
+        const v = speechSynthesis.getVoices().find(x=>x.voiceURI===uri);
+        if (v) u.voice = v;
+        u.onend = ()=>{ window.__aiSpeakState.id = null; };
+        u.onerror = ()=>{ window.__aiSpeakState.id = null; };
+        window.__aiSpeakState.id = msg.id;
+        speechSynthesis.speak(u);
+      }
+    } else if (action==='reload'){
+      if (msg.dataset.regenerating === '1') return; // prevent double-trigger
+      msg.dataset.regenerating = '1';
+      const evt = new CustomEvent('regenerate-response', { detail: { messageId: msg.id } });
+      window.dispatchEvent(evt);
+    }
+  });
+  const bubble = msg.querySelector('.message-bubble');
+  if (bubble) bubble.after(bar);
+  msg.dataset.actionsBound = '1';
+}
+// Preserve a stable reference before other scripts load
+window.__indexAttachActions = attachActions;
+const chatContainer = document.querySelector('.chat-container');
+const mo = new MutationObserver((list)=>{
+  list.forEach(m=>m.addedNodes.forEach(n=>{
+    if (n.nodeType===1){
+      const el = n; if (el.classList?.contains('chat-message')) attachActions(el);
+      el.querySelectorAll?.('.chat-message').forEach(attachActions);
+    }
+  }));
+});
+if (chatContainer) mo.observe(chatContainer, {childList:true, subtree:true});
+document.querySelectorAll('.chat-message').forEach(attachActions);
+// Bridge: allow js/newui.js to request attaching actions on finalized nodes
+window.addEventListener('attach-actions', (e)=>{ try{ const node = e.detail?.node; if(node && window.__indexAttachActions) window.__indexAttachActions(node); }catch{} });
+// Stop any TTS when a regeneration starts
+window.addEventListener('regenerate-response', ()=>{ try{ if('speechSynthesis' in window) speechSynthesis.cancel(); }catch{} });
+
+// Default in-place regenerate behavior
+window.addEventListener('regenerate-response', (e)=>{
+  const id = e.detail?.messageId; if (!id) return;
+  const node = document.getElementById(id); if (!node) return;
+  const parent = node.parentNode; const next = node.nextSibling;
+  parent.removeChild(node);
+  const placeholder = document.createElement('div');
+  placeholder.className = 'chat-message ai-message';
+  placeholder.id = id;
+  placeholder.dataset.regenerating = '1';
+  const bubble = document.createElement('div');
+  bubble.className = 'message-bubble';
+  const host = document.createElement('div');
+  host.className = 'ai-loader-host';
+  try{
+    if(window.LoaderPicker && typeof window.LoaderPicker.createSelectedLoader==='function')
+      host.appendChild(window.LoaderPicker.createSelectedLoader());
+    else host.innerHTML = '<div class="thinking-indicator"><span></span><span></span><span></span></div>';
+  }catch{ host.innerHTML = '<div class="thinking-indicator"><span></span><span></span><span></span></div>'; }
+  bubble.appendChild(host);
+  placeholder.appendChild(bubble);
+  parent.insertBefore(placeholder, next);
+  const req = new CustomEvent('request-regeneration', { detail: { messageId: id } });
+  window.dispatchEvent(req);
+});
+</script>
+<script>
+// Populate TTS voice selector (fallback to system default if none selected)
+(function(){
+  const sel = document.getElementById('voice-select');
+  if(!sel || !('speechSynthesis' in window)) return;
+  function load(){
+    const current = localStorage.getItem('ttsVoiceURI') || '';
+    const voices = speechSynthesis.getVoices();
+    sel.innerHTML = '<option value="">System Default</option>' + voices.map(function(v){
+      return '<option value="'+v.voiceURI+'"'+(v.voiceURI===current?' selected':'')+'>'+v.name+' ('+v.lang+')</option>';
+    }).join('');
+  }
+  load();
+  window.speechSynthesis.onvoiceschanged = load;
+  sel.addEventListener('change', function(){ localStorage.setItem('ttsVoiceURI', sel.value||''); });
+})();
+</script>
+<input type="file" id="global-file-input" multiple style="display:none" />
+<script src="js/loader-picker.js"></script>
+<script src="js/newui.js"></script>
+</body>
+</html>

@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30 Ultra Creative Loading Animations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-size: 2.5em;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .loader-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loader-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .loader-title {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .loader-wrapper {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* 1. Thinking Brain Synapses */
+        .brain-synapses {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+        .synapse {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #e91e63;
+            border-radius: 50%;
+        }
+        .synapse::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            border-radius: 50%;
+            animation: synapseFlow 2s infinite;
+        }
+        .synapse:nth-child(1) { top: 10px; left: 30px; }
+        .synapse:nth-child(2) { top: 20px; left: 10px; animation-delay: 0.3s; }
+        .synapse:nth-child(3) { top: 20px; left: 50px; animation-delay: 0.6s; }
+        .synapse:nth-child(4) { top: 40px; left: 20px; animation-delay: 0.9s; }
+        .synapse:nth-child(5) { top: 40px; left: 40px; animation-delay: 1.2s; }
+        .synapse-connection {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, #e91e63, transparent);
+            height: 1px;
+            animation: connectionPulse 2s infinite;
+        }
+        .synapse-connection:nth-child(6) { top: 15px; left: 12px; width: 20px; transform: rotate(45deg); }
+        .synapse-connection:nth-child(7) { top: 15px; left: 35px; width: 20px; transform: rotate(-45deg); }
+        .synapse-connection:nth-child(8) { top: 30px; left: 15px; width: 30px; }
+        @keyframes synapseFlow {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(2.5); opacity: 1; box-shadow: 0 0 10px currentColor; }
+        }
+        @keyframes connectionPulse {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        /* 2. Origami Crane Folding */
+        .origami-crane {
+            width: 50px;
+            height: 50px;
+            position: relative;
+        }
+        .origami-crane::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-bottom: 40px solid #ff6b6b;
+            animation: craneFold 3s infinite;
+            transform-origin: bottom center;
+        }
+        .origami-crane::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 30px solid #ff9999;
+            bottom: 0;
+            left: 5px;
+            animation: craneWing 3s infinite;
+        }
+        @keyframes craneFold {
+            0%, 100% { transform: rotateX(0deg) rotateY(0deg); }
+            25% { transform: rotateX(180deg) rotateY(0deg); }
+            50% { transform: rotateX(180deg) rotateY(180deg); }
+            75% { transform: rotateX(0deg) rotateY(180deg); }
+        }
+        @keyframes craneWing {
+            0%, 100% { transform: translateX(0) rotateZ(0deg); }
+            50% { transform: translateX(10px) rotateZ(45deg); }
+        }
+
+        /* 3. Lava Lamp Blobs */
+        .lava-lamp {
+            width: 60px;
+            height: 80px;
+            background: linear-gradient(180deg, #ff006e, #8338ec, #3a86ff);
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        .lava-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(5px);
+            animation: floatBlob 4s infinite ease-in-out;
+        }
+        .lava-blob:nth-child(1) {
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            left: 10px;
+            animation-delay: 0s;
+        }
+        .lava-blob:nth-child(2) {
+            width: 15px;
+            height: 15px;
+            background: rgba(255, 255, 255, 0.6);
+            left: 30px;
+            animation-delay: 1s;
+        }
+        .lava-blob:nth-child(3) {
+            width: 25px;
+            height: 25px;
+            background: rgba(255, 255, 255, 0.5);
+            left: 15px;
+            animation-delay: 2s;
+        }
+        @keyframes floatBlob {
+            0%, 100% { bottom: -20px; transform: scale(1); }
+            50% { bottom: 80px; transform: scale(0.8); }
+        }
+
+        /* 4. Neon Sign Flicker */
+        .neon-sign {
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 
+                0 0 10px #ff00de,
+                0 0 20px #ff00de,
+                0 0 30px #ff00de,
+                0 0 40px #ff00de;
+            animation: neonFlicker 2s infinite;
+        }
+        @keyframes neonFlicker {
+            0%, 100% { opacity: 1; text-shadow: 0 0 10px #ff00de, 0 0 20px #ff00de, 0 0 30px #ff00de, 0 0 40px #ff00de; }
+            10% { opacity: 0.8; text-shadow: none; }
+            20% { opacity: 1; }
+            30% { opacity: 0.9; text-shadow: 0 0 5px #ff00de; }
+            40% { opacity: 1; }
+            50% { opacity: 0.6; text-shadow: none; }
+            60% { opacity: 1; }
+            70% { opacity: 0.7; }
+            80% { opacity: 1; text-shadow: 0 0 10px #ff00de, 0 0 20px #ff00de, 0 0 30px #ff00de, 0 0 40px #ff00de; }
+        }
+
+        /* 5. Zen Garden Sand */
+        .zen-garden {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            background: radial-gradient(circle, #f4e4c1 30%, #d4a574 100%);
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        .sand-line {
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background: #8b7355;
+            opacity: 0.3;
+            left: 0;
+            animation: drawSand 3s infinite ease-in-out;
+        }
+        .sand-line:nth-child(1) { top: 20%; animation-delay: 0s; }
+        .sand-line:nth-child(2) { top: 35%; animation-delay: 0.5s; }
+        .sand-line:nth-child(3) { top: 50%; animation-delay: 1s; }
+        .sand-line:nth-child(4) { top: 65%; animation-delay: 1.5s; }
+        .sand-line:nth-child(5) { top: 80%; animation-delay: 2s; }
+        @keyframes drawSand {
+            0% { width: 0; left: 0; }
+            50% { width: 100%; left: 0; }
+            100% { width: 0; left: 100%; }
+        }
+
+        /* 6. Emoji Mood Cycle */
+        .emoji-mood {
+            font-size: 40px;
+            animation: moodCycle 3s infinite steps(1);
+        }
+        @keyframes moodCycle {
+            0% { content: '😴'; }
+            20% { content: '🤔'; }
+            40% { content: '😊'; }
+            60% { content: '🤓'; }
+            80% { content: '💡'; }
+            100% { content: '😴'; }
+        }
+        .emoji-mood::after {
+            content: '😴';
+            animation: moodChange 3s infinite steps(1);
+        }
+        @keyframes moodChange {
+            0% { content: '😴'; }
+            20% { content: '🤔'; }
+            40% { content: '😊'; }
+            60% { content: '🤓'; }
+            80% { content: '💡'; }
+        }
+
+        /* 7. Quantum Particles */
+        .quantum-field {
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+        .quantum-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00ffff;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #00ffff;
+            animation: quantumState 3s infinite;
+        }
+        .quantum-particle:nth-child(1) { animation-delay: 0s; top: 40%; left: 40%; }
+        .quantum-particle:nth-child(2) { animation-delay: 0.5s; top: 30%; left: 30%; }
+        .quantum-particle:nth-child(3) { animation-delay: 1s; top: 50%; left: 50%; }
+        .quantum-particle:nth-child(4) { animation-delay: 1.5s; top: 60%; left: 30%; }
+        .quantum-particle:nth-child(5) { animation-delay: 2s; top: 30%; left: 60%; }
+        @keyframes quantumState {
+            0%, 100% { transform: translate(0, 0); opacity: 0; }
+            25% { transform: translate(20px, -20px); opacity: 1; }
+            50% { transform: translate(-20px, -20px); opacity: 0.5; }
+            75% { transform: translate(-20px, 20px); opacity: 1; }
+        }
+
+        /* 8. Musical Notes Dance */
+        .musical-notes {
+            position: relative;
+            width: 80px;
+            height: 60px;
+        }
+        .note {
+            position: absolute;
+            font-size: 20px;
+            animation: noteDance 2s infinite ease-in-out;
+        }
+        .note:nth-child(1) { content: '♪'; left: 0; animation-delay: 0s; }
+        .note:nth-child(2) { content: '♫'; left: 20px; animation-delay: 0.3s; }
+        .note:nth-child(3) { content: '♬'; left: 40px; animation-delay: 0.6s; }
+        .note:nth-child(4) { content: '♩'; left: 60px; animation-delay: 0.9s; }
+        @keyframes noteDance {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.5; }
+            50% { transform: translateY(-20px) rotate(360deg); opacity: 1; }
+        }
+
+        /* 9. Butterfly Metamorphosis */
+        .butterfly {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+        .butterfly-wing {
+            position: absolute;
+            width: 25px;
+            height: 35px;
+            background: linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcf7f, #4d96ff);
+            border-radius: 50% 10% 50% 10%;
+            animation: flutter 0.8s infinite;
+        }
+        .butterfly-wing.left {
+            left: 5px;
+            transform-origin: right center;
+        }
+        .butterfly-wing.right {
+            right: 5px;
+            transform-origin: left center;
+            animation-delay: 0.1s;
+        }
+        @keyframes flutter {
+            0%, 100% { transform: rotateY(0deg); }
+            50% { transform: rotateY(70deg); }
+        }
+
+        /* 10. Typewriter with Paper */
+        .typewriter {
+            position: relative;
+            width: 60px;
+            height: 50px;
+        }
+        .paper {
+            width: 40px;
+            height: 50px;
+            background: white;
+            border: 2px solid #333;
+            position: absolute;
+            left: 10px;
+            animation: paperFeed 3s infinite;
+            overflow: hidden;
+        }
+        .paper::before {
+            content: '||||||||';
+            position: absolute;
+            font-size: 8px;
+            color: #333;
+            animation: typing 3s infinite steps(8);
+            white-space: nowrap;
+        }
+        @keyframes paperFeed {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        /* 11. Kaleidoscope */
+        .kaleidoscope {
+            width: 60px;
+            height: 60px;
+            position: relative;
+            animation: kaleidoscopeRotate 4s linear infinite;
+        }
+        .kaleido-piece {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 30px solid;
+            left: 15px;
+            transform-origin: bottom center;
+        }
+        .kaleido-piece:nth-child(1) { transform: rotate(0deg); border-bottom-color: #ff6b6b; }
+        .kaleido-piece:nth-child(2) { transform: rotate(60deg); border-bottom-color: #4ecdc4; }
+        .kaleido-piece:nth-child(3) { transform: rotate(120deg); border-bottom-color: #45b7d1; }
+        .kaleido-piece:nth-child(4) { transform: rotate(180deg); border-bottom-color: #f9ca24; }
+        .kaleido-piece:nth-child(5) { transform: rotate(240deg); border-bottom-color: #6c5ce7; }
+        .kaleido-piece:nth-child(6) { transform: rotate(300deg); border-bottom-color: #a29bfe; }
+        @keyframes kaleidoscopeRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 12. Aurora Borealis */
+        .aurora {
+            width: 80px;
+            height: 60px;
+            position: relative;
+            overflow: hidden;
+            background: #001;
+        }
+        .aurora-wave {
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(0, 255, 150, 0.3),
+                rgba(0, 150, 255, 0.5),
+                rgba(150, 0, 255, 0.3),
+                transparent);
+            animation: auroraFlow 3s infinite;
+            filter: blur(10px);
+        }
+        .aurora-wave:nth-child(2) {
+            animation-delay: 1s;
+            opacity: 0.5;
+        }
+        @keyframes auroraFlow {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(100%); }
+        }
+
+        /* 13. Coffee Brewing */
+        .coffee-brew {
+            position: relative;
+            width: 50px;
+            height: 60px;
+        }
+        .coffee-cup {
+            width: 40px;
+            height: 30px;
+            border: 3px solid #8b4513;
+            border-radius: 0 0 15px 15px;
+            position: absolute;
+            bottom: 0;
+            left: 5px;
+        }
+        .coffee-steam {
+            position: absolute;
+            width: 2px;
+            height: 20px;
+            background: linear-gradient(to top, #8b4513, transparent);
+            left: 50%;
+            top: 0;
+            animation: steam 2s infinite;
+        }
+        .coffee-steam::before,
+        .coffee-steam::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+        }
+        .coffee-steam::before { left: -8px; animation: steam 2s infinite 0.5s; }
+        .coffee-steam::after { left: 8px; animation: steam 2s infinite 1s; }
+        @keyframes steam {
+            0%, 100% { transform: translateY(0) scaleY(0); opacity: 0; }
+            50% { transform: translateY(-20px) scaleY(1); opacity: 1; }
+        }
+
+        /* 14. Phoenix Rising */
+        .phoenix {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+        .phoenix-body {
+            width: 20px;
+            height: 30px;
+            background: linear-gradient(180deg, #ff6b6b, #ffa502);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            animation: phoenixRise 3s infinite;
+        }
+        .phoenix-wing {
+            position: absolute;
+            width: 30px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff6348, #ff9f43, #ffd93d);
+            clip-path: polygon(0 0, 100% 50%, 0 100%);
+            animation: wingFlap 1s infinite;
+        }
+        .phoenix-wing.left { left: -5px; top: 15px; }
+        .phoenix-wing.right { right: -5px; top: 15px; transform: scaleX(-1); }
+        @keyframes phoenixRise {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes wingFlap {
+            0%, 100% { transform: rotateY(0deg); }
+            50% { transform: rotateY(60deg); }
+        }
+
+        /* 15. Pixel Art Heart */
+        .pixel-heart {
+            display: grid;
+            grid-template-columns: repeat(7, 8px);
+            gap: 1px;
+        }
+        .pixel {
+            width: 8px;
+            height: 8px;
+            background: transparent;
+        }
+        .pixel.red { 
+            background: #ff0000; 
+            animation: pixelPulse 1s infinite;
+        }
+        @keyframes pixelPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* 16. Galaxy Spiral */
+        .galaxy-spiral {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+        .spiral-arm {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid transparent;
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spiralRotate 2s linear infinite;
+        }
+        .spiral-arm:nth-child(1) { transform: scale(1); animation-delay: 0s; border-top-color: #ff6b9d; }
+        .spiral-arm:nth-child(2) { transform: scale(0.8); animation-delay: 0.2s; border-top-color: #c44569; }
+        .spiral-arm:nth-child(3) { transform: scale(0.6); animation-delay: 0.4s; border-top-color: #524763; }
+        .spiral-arm:nth-child(4) { transform: scale(0.4); animation-delay: 0.6s; border-top-color: #2d3561; }
+        @keyframes spiralRotate {
+            from { transform: rotate(0deg) scale(var(--scale, 1)); }
+            to { transform: rotate(360deg) scale(var(--scale, 1)); }
+        }
+
+        /* 17. Plant Growing */
+        .plant-grow {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+        .plant-stem {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            height: 0;
+            background: linear-gradient(to top, #4a7c4e, #8fbc8f);
+            animation: grow 3s infinite;
+            transform-origin: bottom;
+        }
+        .plant-leaf {
+            position: absolute;
+            width: 15px;
+            height: 10px;
+            background: #8fbc8f;
+            border-radius: 0 100% 0 100%;
+            opacity: 0;
+            animation: leafAppear 3s infinite;
+        }
+        .plant-leaf:nth-child(2) { top: 20px; left: -8px; animation-delay: 1s; }
+        .plant-leaf:nth-child(3) { top: 10px; right: -8px; transform: scaleX(-1); animation-delay: 1.5s; }
+        @keyframes grow {
+            0%, 100% { height: 0; }
+            50% { height: 40px; }
+        }
+        @keyframes leafAppear {
+            0%, 30%, 100% { opacity: 0; transform: scale(0); }
+            50%, 80% { opacity: 1; transform: scale(1); }
+        }
+
+        /* 18. Dice Rolling */
+        .dice-roll {
+            width: 40px;
+            height: 40px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: diceRoll 2s infinite;
+        }
+        .dice-face {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: 2px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        .dice-face:nth-child(1) { transform: rotateY(0deg) translateZ(20px); }
+        .dice-face:nth-child(2) { transform: rotateY(90deg) translateZ(20px); }
+        .dice-face:nth-child(3) { transform: rotateY(180deg) translateZ(20px); }
+        .dice-face:nth-child(4) { transform: rotateY(-90deg) translateZ(20px); }
+        @keyframes diceRoll {
+            0%, 100% { transform: rotateX(0deg) rotateY(0deg); }
+            25% { transform: rotateX(180deg) rotateY(90deg); }
+            50% { transform: rotateX(360deg) rotateY(180deg); }
+            75% { transform: rotateX(180deg) rotateY(270deg); }
+        }
+
+        /* 19. Ferris Wheel */
+        .ferris-wheel {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+        .wheel-frame {
+            width: 60px;
+            height: 60px;
+            border: 3px solid #666;
+            border-radius: 50%;
+            position: absolute;
+            animation: wheelRotate 4s linear infinite;
+        }
+        .wheel-car {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff6b6b;
+            border-radius: 2px;
+        }
+        .wheel-car:nth-child(2) { top: -5px; left: 25px; }
+        .wheel-car:nth-child(3) { top: 25px; right: -5px; }
+        .wheel-car:nth-child(4) { bottom: -5px; left: 25px; }
+        .wheel-car:nth-child(5) { top: 25px; left: -5px; }
+        @keyframes wheelRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 20. Domino Effect */
+        .domino-effect {
+            display: flex;
+            gap: 3px;
+            align-items: flex-end;
+        }
+        .domino {
+            width: 8px;
+            height: 30px;
+            background: #333;
+            border-radius: 2px;
+            transform-origin: bottom center;
+            animation: dominoFall 2s infinite;
+        }
+        .domino:nth-child(1) { animation-delay: 0s; }
+        .domino:nth-child(2) { animation-delay: 0.2s; }
+        .domino:nth-child(3) { animation-delay: 0.4s; }
+        .domino:nth-child(4) { animation-delay: 0.6s; }
+        .domino:nth-child(5) { animation-delay: 0.8s; }
+        @keyframes dominoFall {
+            0%, 20%, 100% { transform: rotate(0deg); }
+            40%, 60% { transform: rotate(45deg); }
+        }
+
+        /* 21. Compass Navigation */
+        .compass {
+            width: 60px;
+            height: 60px;
+            position: relative;
+            border: 3px solid #2c3e50;
+            border-radius: 50%;
+        }
+        .compass-needle {
+            position: absolute;
+            width: 2px;
+            height: 50%;
+            background: linear-gradient(to top, #e74c3c 50%, #3498db 50%);
+            left: 50%;
+            top: 25%;
+            transform-origin: bottom center;
+            animation: compassSpin 3s infinite;
+        }
+        .compass-needle::before {
+            content: 'N';
+            position: absolute;
+            top: -15px;
+            left: -5px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        @keyframes compassSpin {
+            0%, 100% { transform: translateX(-50%) rotate(0deg); }
+            25% { transform: translateX(-50%) rotate(90deg); }
+            50% { transform: translateX(-50%) rotate(180deg); }
+            75% { transform: translateX(-50%) rotate(270deg); }
+        }
+
+        /* 22. Magic Wand Sparkle */
+        .magic-wand {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+        .wand {
+            position: absolute;
+            width: 3px;
+            height: 40px;
+            background: linear-gradient(to top, #8b4513, #daa520);
+            left: 50%;
+            top: 10px;
+            transform: translateX(-50%) rotate(45deg);
+            animation: wandWave 2s infinite;
+        }
+        .sparkle {
+            position: absolute;
+            color: #ffd700;
+            font-size: 12px;
+            animation: sparkleFloat 1s infinite;
+        }
+        .sparkle:nth-child(2) { top: 5px; left: 35px; animation-delay: 0s; }
+        .sparkle:nth-child(3) { top: 15px; left: 45px; animation-delay: 0.3s; }
+        .sparkle:nth-child(4) { top: 25px; left: 40px; animation-delay: 0.6s; }
+        @keyframes wandWave {
+            0%, 100% { transform: translateX(-50%) rotate(45deg); }
+            50% { transform: translateX(-50%) rotate(-45deg); }
+        }
+        @keyframes sparkleFloat {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        /* 23. Fishbowl Swimming */
+        .fishbowl {
+            width: 60px;
+            height: 60px;
+            border: 3px solid #4a90e2;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(to bottom, rgba(74, 144, 226, 0.1), rgba(74, 144, 226, 0.3));
+        }
+        .fish {
+            position: absolute;
+            width: 15px;
+            height: 10px;
+            background: #ff6b6b;
+            border-radius: 50% 0 50% 0;
+            top: 25px;
+            animation: fishSwim 3s infinite;
+        }
+        .fish::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 5px solid #ff6b6b;
+            border-top: 3px solid transparent;
+            border-bottom: 3px solid transparent;
+            right: -4px;
+            top: 2px;
+        }
+        @keyframes fishSwim {
+            0%, 100% { left: -20px; transform: scaleX(1); }
+            49% { left: 65px; transform: scaleX(1); }
+            50% { left: 65px; transform: scaleX(-1); }
+            99% { left: -20px; transform: scaleX(-1); }
+        }
+
+        /* 24. Candle Flame */
+        .candle {
+            width: 40px;
+            height: 60px;
+            position: relative;
+        }
+        .candle-body {
+            width: 20px;
+            height: 40px;
+            background: #f5deb3;
+            position: absolute;
+            bottom: 0;
+            left: 10px;
+            border-radius: 2px;
+        }
+        .flame {
+            width: 15px;
+            height: 20px;
+            background: radial-gradient(ellipse at bottom, #ff9800, #ff5722, #ffeb3b);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: absolute;
+            top: 0;
+            left: 12.5px;
+            animation: flameFlicker 0.5s infinite alternate;
+        }
+        @keyframes flameFlicker {
+            0% { transform: scale(1) rotate(-2deg); }
+            100% { transform: scale(1.05) rotate(2deg); }
+        }
+
+        /* 25. Slot Machine */
+        .slot-machine {
+            display: flex;
+            gap: 5px;
+            height: 30px;
+            overflow: hidden;
+        }
+        .slot-reel {
+            width: 20px;
+            height: 30px;
+            background: #333;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            animation: slotSpin 1s infinite;
+        }
+        .slot-reel:nth-child(2) { animation-delay: 0.2s; }
+        .slot-reel:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes slotSpin {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+        }
+
+        /* 26. Wind Turbine */
+        .wind-turbine {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+        .turbine-pole {
+            position: absolute;
+            width: 4px;
+            height: 40px;
+            background: #666;
+            left: 28px;
+            bottom: 0;
+        }
+        .turbine-blades {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            top: -10px;
+            animation: turbineSpin 2s linear infinite;
+        }
+        .blade {
+            position: absolute;
+            width: 2px;
+            height: 25px;
+            background: #4caf50;
+            left: 29px;
+            top: 5px;
+            transform-origin: bottom center;
+        }
+        .blade:nth-child(1) { transform: rotate(0deg); }
+        .blade:nth-child(2) { transform: rotate(120deg); }
+        .blade:nth-child(3) { transform: rotate(240deg); }
+        @keyframes turbineSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 27. Paint Palette */
+        .paint-palette {
+            width: 60px;
+            height: 50px;
+            background: #d4a574;
+            border-radius: 50% 50% 50% 0;
+            position: relative;
+            transform: rotate(-45deg);
+        }
+        .paint-dot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: paintPulse 2s infinite;
+        }
+        .paint-dot:nth-child(1) { background: #ff0000; top: 10px; left: 10px; animation-delay: 0s; }
+        .paint-dot:nth-child(2) { background: #00ff00; top: 10px; right: 10px; animation-delay: 0.3s; }
+        .paint-dot:nth-child(3) { background: #0000ff; bottom: 15px; left: 10px; animation-delay: 0.6s; }
+        .paint-dot:nth-child(4) { background: #ffff00; bottom: 15px; right: 15px; animation-delay: 0.9s; }
+        @keyframes paintPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* 28. Eye Blink */
+        .eye-blink {
+            width: 60px;
+            height: 30px;
+            position: relative;
+        }
+        .eye {
+            width: 30px;
+            height: 30px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            border: 2px solid #333;
+            overflow: hidden;
+        }
+        .eye:nth-child(1) { left: 0; }
+        .eye:nth-child(2) { right: 0; }
+        .pupil {
+            width: 15px;
+            height: 15px;
+            background: #333;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: eyeLook 3s infinite;
+        }
+        .eyelid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #fdbcb4;
+            top: -100%;
+            animation: blink 3s infinite;
+        }
+        @keyframes eyeLook {
+            0%, 100% { transform: translate(-50%, -50%); }
+            33% { transform: translate(-30%, -50%); }
+            66% { transform: translate(-70%, -50%); }
+        }
+        @keyframes blink {
+            0%, 90%, 100% { top: -100%; }
+            95% { top: 0; }
+        }
+
+        /* 29. Volcano Eruption */
+        .volcano {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+        .volcano-base {
+            width: 0;
+            height: 0;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-bottom: 40px solid #8b4513;
+            position: absolute;
+            bottom: 0;
+        }
+        .lava-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ff4500;
+            border-radius: 50%;
+            bottom: 35px;
+            left: 28px;
+            animation: erupt 2s infinite;
+        }
+        .lava-particle:nth-child(2) { animation-delay: 0.3s; left: 25px; }
+        .lava-particle:nth-child(3) { animation-delay: 0.6s; left: 31px; }
+        @keyframes erupt {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0; }
+            50% { transform: translateY(-40px) scale(1.5); opacity: 1; }
+        }
+
+        /* 30. Fingerprint Scanner */
+        .fingerprint {
+            width: 60px;
+            height: 60px;
+            position: relative;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        .print-line {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid #4caf50;
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+        .print-line:nth-child(1) { transform: scale(0.3); }
+        .print-line:nth-child(2) { transform: scale(0.5); }
+        .print-line:nth-child(3) { transform: scale(0.7); }
+        .print-line:nth-child(4) { transform: scale(0.9); }
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #4caf50, transparent);
+            animation: scan 2s infinite;
+        }
+        @keyframes scan {
+            0%, 100% { top: -2px; }
+            50% { top: 100%; }
+        }
+
+        /* Control styles */
+        .control-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .control-panel h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            margin: -20px 0 30px 0;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>30 Ultra Creative Loading Animations ✨</h1>
+        <p class="subtitle">Next-level creative loaders for the modern web</p>
+        
+        <div class="grid">
+            <!-- 1. Thinking Brain Synapses -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="brain-synapses">
+                        <div class="synapse"></div>
+                        <div class="synapse"></div>
+                        <div class="synapse"></div>
+                        <div class="synapse"></div>
+                        <div class="synapse"></div>
+                        <div class="synapse-connection"></div>
+                        <div class="synapse-connection"></div>
+                        <div class="synapse-connection"></div>
+                    </div>
+                </div>
+                <div class="loader-title">1. Brain Synapses</div>
+            </div>
+
+            <!-- 2. Origami Crane -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="origami-crane"></div>
+                </div>
+                <div class="loader-title">2. Origami Crane</div>
+            </div>
+
+            <!-- 3. Lava Lamp -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="lava-lamp">
+                        <div class="lava-blob"></div>
+                        <div class="lava-blob"></div>
+                        <div class="lava-blob"></div>
+                    </div>
+                </div>
+                <div class="loader-title">3. Lava Lamp</div>
+            </div>
+
+            <!-- 4. Neon Sign -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="neon-sign">OPEN</div>
+                </div>
+                <div class="loader-title">4. Neon Sign Flicker</div>
+            </div>
+
+            <!-- 5. Zen Garden -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="zen-garden">
+                        <div class="sand-line"></div>
+                        <div class="sand-line"></div>
+                        <div class="sand-line"></div>
+                        <div class="sand-line"></div>
+                        <div class="sand-line"></div>
+                    </div>
+                </div>
+                <div class="loader-title">5. Zen Garden Sand</div>
+            </div>
+
+            <!-- 6. Emoji Mood -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="emoji-mood"></div>
+                </div>
+                <div class="loader-title">6. Emoji Mood Cycle</div>
+            </div>
+
+            <!-- 7. Quantum Particles -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="quantum-field">
+                        <div class="quantum-particle"></div>
+                        <div class="quantum-particle"></div>
+                        <div class="quantum-particle"></div>
+                        <div class="quantum-particle"></div>
+                        <div class="quantum-particle"></div>
+                    </div>
+                </div>
+                <div class="loader-title">7. Quantum States</div>
+            </div>
+
+            <!-- 8. Musical Notes -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="musical-notes">
+                        <span class="note">♪</span>
+                        <span class="note">♫</span>
+                        <span class="note">♬</span>
+                        <span class="note">♩</span>
+                    </div>
+                </div>
+                <div class="loader-title">8. Musical Notes</div>
+            </div>
+
+            <!-- 9. Butterfly -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="butterfly">
+                        <div class="butterfly-wing left"></div>
+                        <div class="butterfly-wing right"></div>
+                    </div>
+                </div>
+                <div class="loader-title">9. Butterfly Flutter</div>
+            </div>
+
+            <!-- 10. Typewriter -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="typewriter">
+                        <div class="paper"></div>
+                    </div>
+                </div>
+                <div class="loader-title">10. Typewriter</div>
+            </div>
+
+            <!-- 11. Kaleidoscope -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="kaleidoscope">
+                        <div class="kaleido-piece"></div>
+                        <div class="kaleido-piece"></div>
+                        <div class="kaleido-piece"></div>
+                        <div class="kaleido-piece"></div>
+                        <div class="kaleido-piece"></div>
+                        <div class="kaleido-piece"></div>
+                    </div>
+                </div>
+                <div class="loader-title">11. Kaleidoscope</div>
+            </div>
+
+            <!-- 12. Aurora Borealis -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="aurora">
+                        <div class="aurora-wave"></div>
+                        <div class="aurora-wave"></div>
+                    </div>
+                </div>
+                <div class="loader-title">12. Aurora Borealis</div>
+            </div>
+
+            <!-- 13. Coffee Brewing -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="coffee-brew">
+                        <div class="coffee-steam"></div>
+                        <div class="coffee-cup"></div>
+                    </div>
+                </div>
+                <div class="loader-title">13. Coffee Brewing</div>
+            </div>
+
+            <!-- 14. Phoenix Rising -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="phoenix">
+                        <div class="phoenix-body"></div>
+                        <div class="phoenix-wing left"></div>
+                        <div class="phoenix-wing right"></div>
+                    </div>
+                </div>
+                <div class="loader-title">14. Phoenix Rising</div>
+            </div>
+
+            <!-- 15. Pixel Heart -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="pixel-heart">
+                        <div class="pixel"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel"></div>
+                        <div class="pixel"></div>
+                        <div class="pixel"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel"></div>
+                        <div class="pixel"></div>
+                        <div class="pixel"></div>
+                        <div class="pixel"></div>
+                        <div class="pixel"></div>
+                        <div class="pixel red"></div>
+                        <div class="pixel"></div>
+                        <div class="pixel"></div>
+                        <div class="pixel"></div>
+                    </div>
+                </div>
+                <div class="loader-title">15. Pixel Heart</div>
+            </div>
+
+            <!-- 16. Galaxy Spiral -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="galaxy-spiral">
+                        <div class="spiral-arm"></div>
+                        <div class="spiral-arm"></div>
+                        <div class="spiral-arm"></div>
+                        <div class="spiral-arm"></div>
+                    </div>
+                </div>
+                <div class="loader-title">16. Galaxy Spiral</div>
+            </div>
+
+            <!-- 17. Plant Growing -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="plant-grow">
+                        <div class="plant-stem"></div>
+                        <div class="plant-leaf"></div>
+                        <div class="plant-leaf"></div>
+                    </div>
+                </div>
+                <div class="loader-title">17. Plant Growing</div>
+            </div>
+
+            <!-- 18. Dice Rolling -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="dice-roll">
+                        <div class="dice-face">⚀</div>
+                        <div class="dice-face">⚁</div>
+                        <div class="dice-face">⚂</div>
+                        <div class="dice-face">⚃</div>
+                    </div>
+                </div>
+                <div class="loader-title">18. Dice Rolling</div>
+            </div>
+
+            <!-- 19. Ferris Wheel -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="ferris-wheel">
+                        <div class="wheel-frame"></div>
+                        <div class="wheel-car"></div>
+                        <div class="wheel-car"></div>
+                        <div class="wheel-car"></div>
+                        <div class="wheel-car"></div>
+                    </div>
+                </div>
+                <div class="loader-title">19. Ferris Wheel</div>
+            </div>
+
+            <!-- 20. Domino Effect -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="domino-effect">
+                        <div class="domino"></div>
+                        <div class="domino"></div>
+                        <div class="domino"></div>
+                        <div class="domino"></div>
+                        <div class="domino"></div>
+                    </div>
+                </div>
+                <div class="loader-title">20. Domino Effect</div>
+            </div>
+
+            <!-- 21. Compass -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="compass">
+                        <div class="compass-needle"></div>
+                    </div>
+                </div>
+                <div class="loader-title">21. Compass Navigation</div>
+            </div>
+
+            <!-- 22. Magic Wand -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="magic-wand">
+                        <div class="wand"></div>
+                        <span class="sparkle">✨</span>
+                        <span class="sparkle">✨</span>
+                        <span class="sparkle">✨</span>
+                    </div>
+                </div>
+                <div class="loader-title">22. Magic Wand</div>
+            </div>
+
+            <!-- 23. Fishbowl -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="fishbowl">
+                        <div class="fish"></div>
+                    </div>
+                </div>
+                <div class="loader-title">23. Fishbowl</div>
+            </div>
+
+            <!-- 24. Candle Flame -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="candle">
+                        <div class="flame"></div>
+                        <div class="candle-body"></div>
+                    </div>
+                </div>
+                <div class="loader-title">24. Candle Flame</div>
+            </div>
+
+            <!-- 25. Slot Machine -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="slot-machine">
+                        <div class="slot-reel">7</div>
+                        <div class="slot-reel">🍒</div>
+                        <div class="slot-reel">💎</div>
+                    </div>
+                </div>
+                <div class="loader-title">25. Slot Machine</div>
+            </div>
+
+            <!-- 26. Wind Turbine -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="wind-turbine">
+                        <div class="turbine-pole"></div>
+                        <div class="turbine-blades">
+                            <div class="blade"></div>
+                            <div class="blade"></div>
+                            <div class="blade"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="loader-title">26. Wind Turbine</div>
+            </div>
+
+            <!-- 27. Paint Palette -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="paint-palette">
+                        <div class="paint-dot"></div>
+                        <div class="paint-dot"></div>
+                        <div class="paint-dot"></div>
+                        <div class="paint-dot"></div>
+                    </div>
+                </div>
+                <div class="loader-title">27. Paint Palette</div>
+            </div>
+
+            <!-- 28. Eye Blink -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="eye-blink">
+                        <div class="eye">
+                            <div class="pupil"></div>
+                            <div class="eyelid"></div>
+                        </div>
+                        <div class="eye">
+                            <div class="pupil"></div>
+                            <div class="eyelid"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="loader-title">28. Eye Blink</div>
+            </div>
+
+            <!-- 29. Volcano -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="volcano">
+                        <div class="volcano-base"></div>
+                        <div class="lava-particle"></div>
+                        <div class="lava-particle"></div>
+                        <div class="lava-particle"></div>
+                    </div>
+                </div>
+                <div class="loader-title">29. Volcano Eruption</div>
+            </div>
+
+            <!-- 30. Fingerprint Scanner -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="fingerprint">
+                        <div class="print-line"></div>
+                        <div class="print-line"></div>
+                        <div class="print-line"></div>
+                        <div class="print-line"></div>
+                        <div class="scan-line"></div>
+                    </div>
+                </div>
+                <div class="loader-title">30. Fingerprint Scanner</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add interactive features
+        document.querySelectorAll('.loader-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // Create a ripple effect on click
+                const ripple = document.createElement('div');
+                ripple.style.position = 'absolute';
+                ripple.style.width = '20px';
+                ripple.style.height = '20px';
+                ripple.style.background = 'rgba(102, 126, 234, 0.5)';
+                ripple.style.borderRadius = '50%';
+                ripple.style.transform = 'translate(-50%, -50%)';
+                ripple.style.pointerEvents = 'none';
+                ripple.style.animation = 'rippleEffect 0.6s ease-out';
+                
+                const rect = this.getBoundingClientRect();
+                ripple.style.left = event.clientX - rect.left + 'px';
+                ripple.style.top = event.clientY - rect.top + 'px';
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // Add ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes rippleEffect {
+                to {
+                    width: 200px;
+                    height: 200px;
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

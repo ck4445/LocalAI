@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Model List Editor</title>
+  <style>
+    :root { --bg:#0b1220; --panel:#0f1625; --soft:#1a2233; --text:#e7ecf7; --muted:#a7b1c6; --accent:#7c3aed; --accent2:#00d4ff; --danger:#ef4444; --ok:#10b981; --border:#24304a; }
+    html,body { height:100% }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; background:var(--bg); color:var(--text); }
+    .topbar { position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:12px; padding:12px 14px; background:linear-gradient(180deg, rgba(9,14,24,.9), rgba(9,14,24,.6)); border-bottom:1px solid var(--border); backdrop-filter: blur(6px) saturate(1.2) }
+    .brand { display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px }
+    .brand .dot { width:10px; height:10px; border-radius:50%; background:linear-gradient(120deg, var(--accent), var(--accent2)); box-shadow:0 0 14px rgba(124,58,237,.6) }
+    .toolbar { margin-left:auto; display:flex; gap:8px; flex-wrap:wrap }
+    .btn { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:10px; border:1px solid var(--border); background:var(--panel); color:var(--text); cursor:pointer; user-select:none }
+    .btn:hover { background:#121a2a }
+    .btn.ok { border-color:rgba(16,185,129,.3) }
+    .btn.warn { border-color:rgba(239,68,68,.35); color:#fecaca }
+    .btn.small { padding:6px 8px; font-size:.92em; border-radius:8px }
+    .content { padding:14px; display:grid; grid-template-columns: 320px 1fr; gap:14px; align-items:start }
+    .sidebar, .main { background:var(--panel); border:1px solid var(--border); border-radius:14px }
+    .sidebar { padding:10px; position:sticky; top:62px; max-height: calc(100vh - 72px); overflow:auto }
+    .main { padding:0 }
+    .section-list { display:flex; flex-direction:column; gap:8px }
+    .section-item { display:flex; align-items:center; gap:8px; padding:8px; border:1px solid var(--border); border-radius:10px; background:#0c1422; cursor:pointer }
+    .section-item[aria-selected="true"] { outline:2px solid var(--accent); background:#121a2a }
+    .section-item .name { font-weight:700 }
+    .section-item .muted { color:var(--muted); font-size:.92em }
+    .controls { display:flex; gap:6px; flex-wrap:wrap }
+    .spacer { flex:1 }
+    .editor { padding:12px }
+    .field { margin-bottom:10px }
+    .field label { display:block; font-size:.92em; color:var(--muted); margin-bottom:4px }
+    .field input[type="text"], .field input[type="url"], .field textarea { width:100%; padding:9px 10px; border-radius:10px; border:1px solid var(--border); background:#0b1220; color:var(--text) }
+    .field textarea { min-height:70px; resize:vertical }
+    .models { border-top:1px dashed var(--border); padding-top:10px; margin-top:10px; display:flex; flex-direction:column; gap:8px }
+    .model-row { display:grid; grid-template-columns: 1fr 1fr .8fr 1fr auto; gap:8px; align-items:center; padding:8px; border:1px solid var(--border); border-radius:10px; background:#0c1422 }
+    .model-row input[type="text"], .model-row input[type="url"] { width:100%; padding:7px 9px; border-radius:8px; border:1px solid var(--border); background:#0b1220; color:var(--text) }
+    .model-row .mutef { color:var(--muted); font-size:.88em }
+    .tag { display:inline-flex; align-items:center; gap:6px; padding:3px 8px; border-radius:999px; border:1px solid var(--border); background:#0c1422; color:#e2e8f0; font-size:.82em }
+    .hr { height:1px; background:var(--border); margin:10px 0 }
+    .hint { color:var(--muted); font-size:.9em }
+    .empty { padding:24px; color:var(--muted) }
+    .footer { padding:10px 12px; border-top:1px solid var(--border); display:flex; gap:8px; align-items:center }
+    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:.88em; padding:2px 6px; border:1px solid var(--border); border-radius:6px; background:#0b1220; color:#cbd5e1 }
+    .modal-backdrop { position:fixed; inset:0; background:rgba(10,16,28,.7); backdrop-filter: blur(2px); display:none; align-items:center; justify-content:center; z-index:40 }
+    .modal-backdrop.visible { display:flex }
+    .modal { width:min(960px, 96vw); background:var(--panel); border:1px solid var(--border); border-radius:14px; box-shadow:0 10px 40px rgba(0,0,0,.45); overflow:hidden }
+    .modal .head { display:flex; align-items:center; gap:10px; padding:10px 12px; border-bottom:1px solid var(--border) }
+    .modal .body { padding:12px }
+    .modal textarea { width:100%; min-height:260px; resize:vertical; padding:10px; border-radius:10px; border:1px solid var(--border); background:#0b1220; color:var(--text) }
+    .pill { display:inline-flex; align-items:center; gap:8px; padding:5px 10px; border:1px solid var(--border); background:#0c1422; border-radius:999px }
+    .pill strong { color:#e9effa }
+    .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap }
+    .danger { color:#fecaca }
+    .ok { color:#bbf7d0 }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace }
+    a, a:visited { color:#93c5fd }
+  </style>
+  <script>
+    // Utility: create element
+    function h(tag, attrs={}, ...children){ const el=document.createElement(tag); for(const [k,v] of Object.entries(attrs||{})){ if(k==='class') el.className=v; else if(k==='style') el.style.cssText=v; else if(k.startsWith('on') && typeof v==='function') el.addEventListener(k.slice(2), v); else if(v!==false && v!=null) el.setAttribute(k, v===true?'':v); } for(const c of children.flat()){ if(c==null) continue; el.appendChild(c.nodeType?c:document.createTextNode(c)); } return el; }
+    const EN_DASH = " – ";
+
+    // Data shape stored in localStorage
+    const EMPTY_STATE = {
+      prefix: "# Model List\n\nBelow is a curated list of model families.\n\n---",
+      sections: []
+    };
+
+    function clone(o){ return JSON.parse(JSON.stringify(o)); }
+    function loadState(){ try{ const raw=localStorage.getItem('modelListEditorState'); if(raw){ return JSON.parse(raw); } }catch(e){} return clone(EMPTY_STATE); }
+    function saveState(){ localStorage.setItem('modelListEditorState', JSON.stringify(state)); }
+    function humanNow(){ const d=new Date(); return d.toLocaleString(); }
+
+    // Parser for the specific list.txt format
+    function parseListTxt(txt) {
+        const lines = txt.replaceAll('\r\n', '\n').split('\n');
+        const sections = [];
+        let i = 0;
+        let prefixLines = [];
+        while (i < lines.length) {
+            const L = lines[i];
+            if (L.trim().startsWith('## ')) break;
+            prefixLines.push(L);
+            i++;
+        }
+        let prefix = prefixLines.join('\n').trim();
+        while (i < lines.length) {
+            if (!lines[i].trim().startsWith('## ')) {
+                i++;
+                continue;
+            }
+            const header = lines[i].trim();
+            i++;
+            const m = header.match(/^##\s*(.+?)(?:\s*[-–—]\s*creator:\s*\*\*(.+?)\*\*)?/i);
+            const family = m ? m[1].trim() : header.replace(/^##\s*/, '').trim();
+            const creator = m && m[2] ? m[2].trim() : '';
+            let desc = '';
+            let link = '';
+            while (i < lines.length && lines[i].trim() === '') i++;
+            if (i < lines.length && !lines[i].trim().startsWith('* ')) {
+                const dline = lines[i];
+                i++;
+                const um = dline.match(/(https?:\/\/\S+)\s*$/);
+                if (um) {
+                    link = um[1];
+                    desc = dline.slice(0, um.index).trim();
+                } else {
+                    desc = dline.trim();
+                }
+            }
+            while (i < lines.length && lines[i].trim() === '') i++;
+            const models = [];
+            while (i < lines.length) {
+                const L = lines[i];
+                if (L.trim() === '---' || L.trim().startsWith('## ')) break;
+                if (L.trim().startsWith('* ')) {
+                    const raw = L.trim();
+                    let label = '';
+                    let id = '';
+                    let multimodal = false;
+                    let modality = 'text';
+                    let url = '';
+                    const labelM = raw.match(/^\*\s+\*\*(.+?)\*\*/);
+                    if (labelM) label = labelM[1].trim();
+                    const idM = raw.match(/ID:\s*`([^`]+)`/);
+                    if (idM) id = idM[1].trim();
+                    const mmM = raw.match(/[-–—]\s*(\*\*multimodal(?:\s*\([^)]*\))?\*\*|not\s+multimodal(?:\s*\([^)]*\))?)/i);
+                    if (mmM) {
+                        const seg = mmM[1];
+                        if (/multimodal/i.test(seg)) {
+                            multimodal = true;
+                            const pm = seg.match(/\(([^)]+)\))/);
+                            modality = pm ? pm[1] : 'text & image';
+                        } else {
+                            multimodal = false;
+                            const pm = seg.match(/\(([^)]+)\))/);
+                            modality = pm ? pm[1] : 'text';
+                        }
+                    }
+                    const urlM = raw.match(/(https?:\/\/\S+)\s*$/);
+                    if (urlM) url = urlM[1];
+                    models.push({
+                        label,
+                        id,
+                        multimodal,
+                        modality,
+                        url
+                    });
+                }
+                i++;
+            }
+            sections.push({
+                family,
+                creator,
+                description: desc,
+                link,
+                models
+            });
+            while (i < lines.length && (lines[i].trim() === '---' || lines[i].trim() === '')) {
+                i++;
+            }
+        }
+        return {
+            prefix,
+            sections
+        };
+    }
+
+    // Serializer back to list.txt format
+    function toListTxt(data){
+      const out = [];
+      const prefix = (data.prefix||'').trim();
+      if(prefix) out.push(prefix);
+      const sep = '---';
+      for(let s=0; s<data.sections.length; s++){
+        const sec = data.sections[s];
+        out.push('');
+        out.push(sep);
+        out.push('');
+        const head = '## ' + (sec.family||'Family') + EN_DASH + 'creator: **' + (sec.creator||'Creator') + '**';
+        out.push(head);
+        const dline = (sec.description||'').trim();
+        const link = (sec.link||'').trim();
+        out.push(dline + (link? link: ''));
+        out.push('');
+        for(const m of (sec.models||[])){
+          const label = m.label||'model:1b';
+          const id = m.id||label;
+          const mm = m.multimodal ? `**multimodal (${m.modality||'text & image'})**` : `not multimodal (${m.modality||'text'})`;
+          const tail = (m.url||'').trim();
+          out.push(`* **${label}**${EN_DASH}ID: \`${id}\`${EN_DASH}${mm}${tail? tail:''}`);
+        }
+      }
+      let txt = out.join('\n').replaceAll('\n\n\n','\n\n');
+      return txt.trim() + '\n';
+    }
+
+    // UI logic
+    let state = loadState();
+    let selectedIndex = 0;
+
+    function selectSection(idx){ selectedIndex = idx; render(); }
+    function addSection(){
+      state.sections.push({ family: 'New Family', creator: 'Creator', description: '', link: '', models: [] });
+      saveState(); selectedIndex = state.sections.length-1; render();
+    }
+    function deleteSection(idx){ if(!confirm('Delete this section?')) return; state.sections.splice(idx,1); if(selectedIndex>=state.sections.length) selectedIndex = state.sections.length-1; if(selectedIndex<0) selectedIndex=0; saveState(); render(); }
+    function moveSection(idx, dir){ const j = idx+dir; if(j<0||j>=state.sections.length) return; const t=state.sections[idx]; state.sections[idx]=state.sections[j]; state.sections[j]=t; selectedIndex=j; saveState(); render(); }
+    function addModel(idx){ const sec = state.sections[idx]; sec.models.push({ label:'model:1b', id:'model:1b', multimodal:false, modality:'text', url:'' }); saveState(); render(); }
+    function deleteModel(idx, mIdx){ const sec=state.sections[idx]; sec.models.splice(mIdx,1); saveState(); render(); }
+    function moveModel(idx, mIdx, dir){ const sec=state.sections[idx]; const j=mIdx+dir; if(j<0||j>=sec.models.length) return; const t=sec.models[mIdx]; sec.models[mIdx]=sec.models[j]; sec.models[j]=t; saveState(); render(); }
+
+    function render(){
+      const sidebar = document.getElementById('sectionList');
+      const main = document.getElementById('main');
+      sidebar.innerHTML='';
+      if(state.sections.length===0){ sidebar.appendChild(h('div',{class:'empty'},'No sections yet. Click "New Section".')); main.innerHTML = '<div class="empty">Nothing selected.</div>'; return; }
+
+      state.sections.forEach((sec, i)=>{
+        const el = h('div', {class:'section-item', 'aria-selected': String(i===selectedIndex)},
+          h('div',{class:'dot', style:'width:8px;height:8px;border-radius:50%;background:linear-gradient(120deg,var(--accent),var(--accent2))'}),
+          h('div',{}, h('div',{class:'name'}, sec.family||'Family'), h('div',{class:'muted'}, sec.creator||'')),
+          h('div',{class:'spacer'}),
+          h('button',{class:'btn small', onclick:e=>moveSection(i,-1), title:'Move up'}, '↑'),
+          h('button',{class:'btn small', onclick:e=>moveSection(i,1), title:'Move down'}, '↓'),
+          h('button',{class:'btn small warn', onclick:e=>deleteSection(i), title:'Delete section'}, 'Delete')
+        );
+        el.addEventListener('click', (ev)=>{ if(ev.target.tagName==='BUTTON') return; selectSection(i); });
+        sidebar.appendChild(el);
+      });
+
+      // Main editor
+      const sec = state.sections[selectedIndex];
+      const editor = h('div',{class:'editor'});
+      // Prefix editor
+      editor.appendChild(h('div', {class:'field'}, h('label',{}, 'Top matter (prefix before first section)'), h('textarea',{id:'prefixTxt', oninput:e=>{ state.prefix=e.target.value; saveState(); }, placeholder:'# Title...'}, state.prefix||'')));
+
+      editor.appendChild(h('div',{class:'hr'}));
+      editor.appendChild(h('div',{class:'row'}, h('div',{class:'pill'}, h('strong',{},'Section')), h('div',{class:'hint'}, 'Edit the selected family')));
+
+      const fam = h('input',{type:'text', value:sec.family||'', oninput:e=>{ sec.family=e.target.value; saveState(); }});
+      const creator = h('input',{type:'text', value:sec.creator||'', oninput:e=>{ sec.creator=e.target.value; saveState(); }});
+      const desc = h('textarea',{oninput:e=>{ sec.description=e.target.value; saveState(); }}, sec.description||'');
+      const link = h('input',{type:'url', placeholder:'https://...', value:sec.link||'', oninput:e=>{ sec.link=e.target.value; saveState(); }});
+
+      editor.appendChild(h('div',{class:'field'}, h('label',{}, 'Family name'), fam));
+      editor.appendChild(h('div',{class:'field'}, h('label',{}, 'Creator'), creator));
+      editor.appendChild(h('div',{class:'field'}, h('label',{}, 'Description (line before bullets)'), desc));
+      editor.appendChild(h('div',{class:'field'}, h('label',{}, 'Description URL (appended to description line)'), link));
+
+      // Models list
+      editor.appendChild(h('div',{class:'row'}, h('div',{class:'pill'}, h('strong',{},'Models'), h('span',{class:'muted'}, `(${sec.models.length})`)), h('div',{class:'spacer'}), h('button',{class:'btn ok', onclick:()=>addModel(selectedIndex)}, '+ Add Model')));
+      const modelsBox = h('div',{class:'models'});
+      sec.models.forEach((m, mi)=>{
+        const label = h('input',{type:'text', placeholder:'label e.g. llama3:8b', value:m.label||'', oninput:e=>{ m.label=e.target.value; saveState(); }});
+        const id = h('input',{type:'text', placeholder:'id e.g. llama3:8b', value:m.id||'', oninput:e=>{ m.id=e.target.value; saveState(); }});
+        const modality = h('input',{type:'text', placeholder:'text · text only · text & image · text/code', value:m.modality||'text', oninput:e=>{ m.modality=e.target.value; saveState(); }});
+        const url = h('input',{type:'url', placeholder:'https://model/link', value:m.url||'', oninput:e=>{ m.url=e.target.value; saveState(); }});
+        const mmToggle = h('label', {class:'tag', title:'Toggle multimodal'}, h('input',{type:'checkbox', checked:!!m.multimodal, onchange:e=>{ m.multimodal=e.target.checked; saveState(); }}), h('span',{}, m.multimodal?'multimodal':'not multimodal'));
+        const row = h('div',{class:'model-row'}, label, id, h('div',{}, mmToggle, h('div',{class:'mutef'}, ' ')), modality, url,
+          h('div',{}, h('button',{class:'btn small', onclick:()=>moveModel(selectedIndex, mi, -1)}, '↑'), h('button',{class:'btn small', onclick:()=>moveModel(selectedIndex, mi, 1)}, '↓'), h('button',{class:'btn small warn', onclick:()=>deleteModel(selectedIndex, mi)}, 'Delete')));
+        modelsBox.appendChild(row);
+      });
+      editor.appendChild(modelsBox);
+
+      main.innerHTML='';
+      main.appendChild(editor);
+    }
+
+    // Export/Import
+    function openModal(id){ document.getElementById(id).classList.add('visible'); }
+    function closeModal(id){ document.getElementById(id).classList.remove('visible'); }
+    function doExport(){ const txt = toListTxt(state); const ta = document.getElementById('exportTxt'); ta.value = txt; openModal('exportModal'); ta.focus(); ta.select(); }
+    async function copyExport(){ const txt = document.getElementById('exportTxt').value; try{ await navigator.clipboard.writeText(txt); toast('Copied to clipboard'); }catch(e){ alert('Copy failed. Select the text and press Ctrl+C.'); } }
+    function downloadTxt(){ const txt = document.getElementById('exportTxt').value; const blob = new Blob([txt], {type:'text/plain'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'list.txt'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(a.href); }
+    function doImport(){ const ta = document.getElementById('importTxt'); ta.value=''; openModal('importModal'); ta.focus(); }
+    function applyImport(){ const txt = document.getElementById('importTxt').value; if(!txt.trim()){ alert('Paste list.txt content first.'); return; } const data = parseListTxt(txt); state = data; saveState(); closeModal('importModal'); selectedIndex = 0; render(); toast('Imported '+(data.sections.length)+' section(s)'); }
+    async function pasteFromClipboard(){ try{ const t=await navigator.clipboard.readText(); document.getElementById('importTxt').value = t; }catch(e){ alert('Clipboard read failed by browser. Paste manually (Ctrl+V).'); } }
+    async function tryLoadListTxt(){ try{ const res = await fetch('list.txt', {cache:'no-store'}); if(!res.ok) throw new Error(res.statusText); const txt = await res.text(); const data = parseListTxt(txt); state = data; saveState(); selectedIndex=0; render(); toast('Loaded list.txt'); }catch(e){ toast('Could not fetch list.txt'); }}
+    function clearAll(){ if(!confirm('Clear editor and reset?')) return; state = clone(EMPTY_STATE); saveState(); selectedIndex=0; render(); }
+    function toast(msg){ const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('visible'); setTimeout(()=>t.classList.remove('visible'), 1600); }
+
+    window.addEventListener('DOMContentLoaded', ()=>{
+      render();
+      // Shortcuts
+      window.addEventListener('keydown', (e)=>{
+        if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); doExport(); }
+      });
+    });
+  </script>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand"><span class="dot"></span> <span>Model List Editor</span></div>
+    <div class="toolbar">
+      <button class="btn" onclick="addSection()">+ New Section</button>
+      <button class="btn" onclick="doImport()">Import (Paste)</button>
+      <button class="btn" onclick="tryLoadListTxt()">Load list.txt</button>
+      <button class="btn ok" onclick="doExport()">Export / Copy</button>
+      <button class="btn warn" onclick="clearAll()">Reset</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="sidebar">
+      <div class="controls row" style="margin-bottom:8px">
+        <span class="tag">Sections: <strong id="secCount"> </strong></span>
+        <span class="spacer"></span>
+      </div>
+      <div id="sectionList" class="section-list"></div>
+    </div>
+    <div id="main" class="main"></div>
+  </div>
+
+  <div id="importModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Import">
+    <div class="modal">
+      <div class="head">
+        <div class="pill"><strong>Import</strong><span class="muted">Paste the current list.txt</span></div>
+        <div class="spacer"></div>
+        <button class="btn" onclick="pasteFromClipboard()">Paste from Clipboard</button>
+        <button class="btn" onclick="closeModal('importModal')">Close</button>
+      </div>
+      <div class="body">
+        <textarea id="importTxt" placeholder="Paste the full contents of list.txt here..."></textarea>
+        <div class="row" style="margin-top:8px">
+          <button class="btn ok" onclick="applyImport()">Apply Import</button>
+          <div class="hint">Parser understands sections, creators, description+URL, bullets, multimodal flags, and trailing URLs.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="exportModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Export">
+    <div class="modal">
+      <div class="head">
+        <div class="pill"><strong>Export</strong><span class="muted">Copy or download as list.txt</span></div>
+        <div class="spacer"></div>
+        <button class="btn" onclick="copyExport()">Copy</button>
+        <button class="btn" onclick="downloadTxt()">Download</button>
+        <button class="btn" onclick="closeModal('exportModal')">Close</button>
+      </div>
+      <div class="body">
+        <textarea id="exportTxt" class="mono"></textarea>
+        <div class="hint">Tip: Press <span class="kbd">Ctrl</span>+<span class="kbd">S</span> to open export.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" style="position:fixed; left:50%; transform:translateX(-50%); bottom:16px; background:#0f1625; border:1px solid var(--border); padding:8px 12px; border-radius:10px; display:inline-block; opacity:0; transition:opacity .2s; pointer-events:none">Done</div>
+  <script>
+    // Keep section count updated and rerender hook
+    const _render = render;
+    render = function(){ _render(); const c=document.getElementById('secCount'); if(c) c.textContent = String(state.sections.length); };
+  </script>
+</body>
+</html>
+

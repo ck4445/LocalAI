@@ -1,0 +1,184 @@
+# Ollama models (August 17 2025)
+
+Below are selected model families from the **Ollama** library along with their creators, specific model versions (parameter sizes) and whether each version is multimodal.  Where a model lists "Text" only in the input column, it is listed as **not multimodal**; models that accept images as input are noted as **multimodal**.
+
+---
+
+## GPT‑OSS – creator: **OpenAI & Ollama**
+OpenAI and Ollama partnered to release open‑weight GPT‑OSS modelshttps://ollama.com/library/gpt-oss#:~:text=Welcome%20OpenAI%E2%80%99s%20gpt.
+
+* **gpt‑oss:20b** – ID: `gpt-oss:20b` – not multimodal (text)https://ollama.com/library/gpt-oss#:~:text=gpt,Text%20%C2%B7%206%20days%20ago.
+* **gpt‑oss:120b** – ID: `gpt-oss:120b` – not multimodal (text)https://ollama.com/library/gpt-oss#:~:text=gpt,Text%20%C2%B7%206%20days%20ago.
+* **gpt‑oss:latest** – ID: `gpt-oss:latest` – not multimodal (text)https://ollama.com/library/gpt-oss#:~:text=gpt,Text%20%C2%B7%206%20days%20ago.
+
+---
+
+## DeepSeek‑R1 – creator: **DeepSeek team**
+DeepSeek‑R1 models are open‑weight reasoning models from DeepSeekhttps://ollama.com/library/deepseek-r1#:~:text=DeepSeek,5%20Pro.
+
+* **deepseek‑r1:1.5b** – ID: `deepseek-r1:1.5b` – not multimodal (text)https://ollama.com/library/deepseek-r1#:~:text=deepseek,Text%20%C2%B7%202%20months%20ago.
+* **deepseek‑r1:7b** – ID: `deepseek-r1:7b` – not multimodal (text)https://ollama.com/library/deepseek-r1#:~:text=deepseek,Text%20%C2%B7%202%20months%20ago.
+* **deepseek‑r1:8b** – ID: `deepseek-r1:8b` – not multimodal (text)https://ollama.com/library/deepseek-r1#:~:text=deepseek,Text%20%C2%B7%202%20months%20ago.
+* **deepseek‑r1:14b** – ID: `deepseek-r1:14b` – not multimodal (text)https://ollama.com/library/deepseek-r1#:~:text=deepseek,Text%20%C2%B7%202%20months%20ago.
+* **deepseek‑r1:32b** – ID: `deepseek-r1:32b` – not multimodal (text)https://ollama.com/library/deepseek-r1#:~:text=deepseek,Text%20%C2%B7%202%20months%20ago.
+* **deepseek‑r1:70b** – ID: `deepseek-r1:70b` – not multimodal (text)https://ollama.com/library/deepseek-r1#:~:text=deepseek,Text%20%C2%B7%202%20months%20ago.
+* **deepseek‑r1:671b** – ID: `deepseek-r1:671b` – not multimodal (text)https://ollama.com/library/deepseek-r1#:~:text=deepseek,Text%20%C2%B7%201%20month%20ago.
+* **deepseek‑r1:latest** – ID: `deepseek-r1:latest` – not multimodal (text)https://ollama.com/library/deepseek-r1#:~:text=deepseek,Text%20%C2%B7%202%20months%20ago.
+
+---
+
+## Gemma 3 – creator: **Google**
+Gemma 3 models are built by Google on Gemini technology and support text‑and‑image reasoninghttps://ollama.com/library/gemma3#:~:text=,Download%20Ollama.
+
+* **gemma3:270m** – ID: `gemma3:270m` – not multimodal (text)https://ollama.com/library/gemma3#:~:text=gemma3%3A270m%20292MB%20%C2%B7%2032K%20context,Text%20%C2%B7%202%20days%20ago.
+* **gemma3:1b** – ID: `gemma3:1b` – not multimodal (text)https://ollama.com/library/gemma3#:~:text=gemma3%3A1b%20815MB%20%C2%B7%2032K%20context,Text%20%C2%B7%204%20months%20ago.
+* **gemma3:4b** – ID: `gemma3:4b` – **multimodal (text & image)**https://ollama.com/library/gemma3#:~:text=gemma3%3A4b%20latest%203,Image%20%C2%B7%204%20months%20ago.
+* **gemma3:12b** – ID: `gemma3:12b` – **multimodal (text & image)**https://ollama.com/library/gemma3#:~:text=gemma3%3A12b%208,Image%20%C2%B7%204%20months%20ago.
+* **gemma3:27b** – ID: `gemma3:27b` – **multimodal**https://ollama.com/library/gemma3#:~:text=gemma3%3A27b%2017GB%20%C2%B7%20128K%20context,Image%20%C2%B7%204%20months%20ago.
+* **gemma3:1b‑it‑qat** – ID: `gemma3:1b-it-qat` – not multimodal (text)https://ollama.com/library/gemma3#:~:text=1B%20parameter%20model.
+* **gemma3:4b‑it‑qat** – ID: `gemma3:4b-it-qat` – **multimodal**https://ollama.com/library/gemma3#:~:text=4B%20parameter%20model.
+* **gemma3:12b‑it‑qat** – ID: `gemma3:12b-it-qat` – **multimodal**https://ollama.com/library/gemma3#:~:text=12B%20parameter%20model.
+* **gemma3:27b‑it‑qat** – ID: `gemma3:27b-it-qat` – **multimodal**https://ollama.com/library/gemma3#:~:text=12B%20parameter%20model.
+* **gemma3:latest** – ID: `gemma3:latest` – **multimodal** (alias; text & image)https://ollama.com/library/gemma3#:~:text=gemma3%3Alatest%203,Image%20%C2%B7%204%20months%20ago.
+
+---
+
+## Qwen 3 – creator: **Qwen Team (Alibaba)**
+The Qwen 3 family is a suite of dense and mixture‑of‑experts models from the Qwen teamhttps://ollama.com/library/qwen3#:~:text=Overview.
+
+* **qwen3:0.6b** – ID: `qwen3:0.6b` – not multimodal (text)https://ollama.com/library/qwen3#:~:text=qwen3%3A0,Text%20%C2%B7%202%20months%20ago.
+* **qwen3:1.7b** – ID: `qwen3:1.7b` – not multimodal (text)https://ollama.com/library/qwen3#:~:text=qwen3%3A1,Text%20%C2%B7%202%20months%20ago.
+* **qwen3:4b** – ID: `qwen3:4b` – not multimodal (text)https://ollama.com/library/qwen3#:~:text=qwen3%3A4b%202,Text%20%C2%B7%201%20week%20ago.
+* **qwen3:8b** – ID: `qwen3:8b` – not multimodal (text)https://ollama.com/library/qwen3#:~:text=qwen3%3A8b%20latest%205,Text%20%C2%B7%202%20months%20ago.
+* **qwen3:14b** – ID: `qwen3:14b` – not multimodal (text)https://ollama.com/library/qwen3#:~:text=qwen3%3A14b%209,Text%20%C2%B7%202%20months%20ago.
+* **qwen3:30b** – ID: `qwen3:30b` – not multimodal (text)https://ollama.com/library/qwen3#:~:text=qwen3%3A30b%2019GB%20%C2%B7%20256K%20context,Text%20%C2%B7%202%20weeks%20ago.
+* **qwen3:32b** – ID: `qwen3:32b` – not multimodal (text)https://ollama.com/library/qwen3#:~:text=qwen3%3A32b%2020GB%20%C2%B7%2040K%20context,Text%20%C2%B7%202%20months%20ago.
+* **qwen3:235b** – ID: `qwen3:235b` – not multimodal (text)https://ollama.com/library/qwen3#:~:text=qwen3%3A235b%20142GB%20%C2%B7%20256K%20context,Text%20%C2%B7%202%20weeks%20ago.
+* **qwen3:latest** – ID: `qwen3:latest` – not multimodal (text)https://ollama.com/library/qwen3#:~:text=qwen3%3Alatest%205,Text%20%C2%B7%202%20months%20ago.
+
+---
+
+## Llama 3.1 – creator: **Meta**
+Llama 3.1 is Meta’s state‑of‑the‑art model available in 8B, 70B and 405B sizeshttps://ollama.com/library/llama3.1#:~:text=Llama%203,70B%20and%20405B%20parameter%20sizes.
+
+* **llama3.1:8b** – ID: `llama3.1:8b` – not multimodal (text)https://ollama.com/library/llama3.1#:~:text=llama3,Text%20%C2%B7%208%20months%20ago.
+* **llama3.1:70b** – ID: `llama3.1:70b` – not multimodal (text)https://ollama.com/library/llama3.1#:~:text=llama3,Text%20%C2%B7%208%20months%20ago.
+* **llama3.1:405b** – ID: `llama3.1:405b` – not multimodal (text)https://ollama.com/library/llama3.1#:~:text=llama3,Text%20%C2%B7%208%20months%20ago.
+* **llama3.1:latest** – ID: `llama3.1:latest` – not multimodal (text)https://ollama.com/library/llama3.1#:~:text=llama3,Text%20%C2%B7%208%20months%20ago.
+
+---
+
+## Nomic‑Embed‑Text – creator: **Nomic AI**
+The nomic‑embed‑text model provides high‑quality text embeddingshttps://ollama.com/library/nomic-embed-text#:~:text=%60nomic,short%20and%20long%20context%20tasks.
+
+* **nomic‑embed‑text:v1.5** – ID: `nomic-embed-text:v1.5` – not multimodal (text only)https://ollama.com/library/nomic-embed-text#:~:text=nomic,Text%20%C2%B7%201%20year%20ago.
+* **nomic‑embed‑text:latest** – ID: `nomic-embed-text:latest` – not multimodal (text only)https://ollama.com/library/nomic-embed-text#:~:text=nomic,Text%20%C2%B7%201%20year%20ago.
+
+---
+
+## Llama 3.2 – creator: **Meta**
+Llama 3.2 is a multilingual instruction‑tuned family of text‑only models in 1B and 3B sizeshttps://ollama.com/library/llama3.2#:~:text=The%20Meta%20Llama%203,the%20available%20open%20source%20and.
+
+* **llama3.2:1b** – ID: `llama3.2:1b` – not multimodal (text)https://ollama.com/library/llama3.2#:~:text=llama3,Text%20%C2%B7%2010%20months%20ago.
+* **llama3.2:3b** – ID: `llama3.2:3b` – not multimodal (text)https://ollama.com/library/llama3.2#:~:text=llama3,Text%20%C2%B7%2010%20months%20ago.
+* **llama3.2:latest** – ID: `llama3.2:latest` – not multimodal (text)https://ollama.com/library/llama3.2#:~:text=llama3,Text%20%C2%B7%2010%20months%20ago.
+
+---
+
+## Llama 3.2 Vision – creator: **Meta**
+Llama 3.2‑Vision models are instruction‑tuned multimodal models for image reasoninghttps://ollama.com/library/llama3.2-vision#:~:text=The%20Llama%203.2,models%20on%20common%20industry%20benchmarks.
+
+* **llama3.2‑vision:11b** – ID: `llama3.2-vision:11b` – **multimodal (text & image)**https://ollama.com/library/llama3.2-vision#:~:text=llama3.2,Image%20%C2%B7%202%20months%20ago.
+* **llama3.2‑vision:90b** – ID: `llama3.2-vision:90b` – **multimodal (text & image)**https://ollama.com/library/llama3.2-vision#:~:text=llama3.2,Image%20%C2%B7%202%20months%20ago.
+* **llama3.2‑vision:latest** – ID: `llama3.2-vision:latest` – **multimodal (text & image)**https://ollama.com/library/llama3.2-vision#:~:text=llama3.2,Image%20%C2%B7%202%20months%20ago.
+
+---
+
+## Mistral 7B – creator: **Mistral AI**
+Mistral AI released a 7B model (version 0.3) that supports function callinghttps://ollama.com/library/mistral#:~:text=.
+
+* **mistral:7b** – ID: `mistral:7b` – not multimodal (text)https://ollama.com/library/mistral#:~:text=mistral%3A7b%20latest%204,Text%20%C2%B7%201%20month%20ago.
+* **mistral:latest** – ID: `mistral:latest` – not multimodal (text)https://ollama.com/library/mistral#:~:text=mistral%3Alatest%204,Text%20%C2%B7%201%20month%20ago.
+
+---
+
+## Qwen 2.5 – creator: **Qwen Team (Alibaba)**
+Qwen 2.5 models are pretrained on Alibaba’s latest dataset and support up to 128K tokenshttps://ollama.com/library/qwen2.5#:~:text=Qwen2,tokens%20and%20has%20multilingual%20support.
+
+* **qwen2.5:0.5b** – ID: `qwen2.5:0.5b` – not multimodal (text)https://ollama.com/library/qwen2.5#:~:text=qwen2,Text%20%C2%B7%2011%20months%20ago.
+* **qwen2.5:1.5b** – ID: `qwen2.5:1.5b` – not multimodal (text)https://ollama.com/library/qwen2.5#:~:text=qwen2,Text%20%C2%B7%2011%20months%20ago.
+* **qwen2.5:3b** – ID: `qwen2.5:3b` – not multimodal (text)https://ollama.com/library/qwen2.5#:~:text=qwen2,Text%20%C2%B7%2011%20months%20ago.
+* **qwen2.5:7b** – ID: `qwen2.5:7b` – not multimodal (text)https://ollama.com/library/qwen2.5#:~:text=qwen2,Text%20%C2%B7%2011%20months%20ago.
+* **qwen2.5:14b** – ID: `qwen2.5:14b` – not multimodal (text)https://ollama.com/library/qwen2.5#:~:text=qwen2,Text%20%C2%B7%2011%20months%20ago.
+* **qwen2.5:32b** – ID: `qwen2.5:32b` – not multimodal (text)https://ollama.com/library/qwen2.5#:~:text=qwen2,Text%20%C2%B7%2011%20months%20ago.
+* **qwen2.5:72b** – ID: `qwen2.5:72b` – not multimodal (text)https://ollama.com/library/qwen2.5#:~:text=qwen2,Text%20%C2%B7%2011%20months%20ago.
+* **qwen2.5:latest** – ID: `qwen2.5:latest` – not multimodal (text)https://ollama.com/library/qwen2.5#:~:text=qwen2,Text%20%C2%B7%2011%20months%20ago.
+
+---
+
+## LLaVA – creator: **LLaVA project (Vicuna + vision encoder)**
+LLaVA is a multimodal model combining a vision encoder and Vicunahttps://ollama.com/library/llava#:~:text=LLaVA%20is%20a%20novel%20end,6.
+
+* **llava:7b** – ID: `llava:7b` – **multimodal (text & image)**https://ollama.com/library/llava#:~:text=llava%3Alatest%204,Image%20%C2%B7%201%20year%20ago.
+* **llava:13b** – ID: `llava:13b` – not multimodal (text only)https://ollama.com/library/llava#:~:text=llava%3A13b%208,Text%20%C2%B7%201%20year%20ago.
+* **llava:34b** – ID: `llava:34b` – not multimodal (text only)https://ollama.com/library/llava#:~:text=llava%3A34b%2020GB%20%C2%B7%204K%20context,Text%20%C2%B7%201%20year%20ago.
+* **llava:latest** – ID: `llava:latest` – **multimodal (text & image)**https://ollama.com/library/llava#:~:text=llava%3Alatest%204,Image%20%C2%B7%201%20year%20ago.
+
+---
+
+## Phi‑3 – creator: **Microsoft**
+Phi‑3 is a family of lightweight open models developed by Microsofthttps://ollama.com/library/phi3#:~:text=Phi,art%20open%20models%20by%20Microsoft.
+
+* **phi3:3.8b (Mini)** – ID: `phi3:3.8b` – not multimodal (text)https://ollama.com/library/phi3#:~:text=phi3%3A3,Text%20%C2%B7%201%20year%20ago.
+* **phi3:14b (Medium)** – ID: `phi3:14b` – not multimodal (text)https://ollama.com/library/phi3#:~:text=phi3%3A14b%207,Text%20%C2%B7%201%20year%20ago.
+* **phi3:latest** – ID: `phi3:latest` – not multimodal (text)https://ollama.com/library/phi3#:~:text=phi3%3Alatest%202,Text%20%C2%B7%201%20year%20ago.
+
+---
+
+## Gemma 2 – creator: **Google**
+Google’s Gemma 2 models deliver high performance in 2B, 9B and 27B sizeshttps://ollama.com/library/gemma2#:~:text=Google%20Gemma%202%20is%20a,sizes%3A%202B%2C%209B%2C%20and%2027B.
+
+* **gemma2:2b** – ID: `gemma2:2b` – not multimodal (text)https://ollama.com/library/gemma2#:~:text=gemma2%3A2b%201,Text%20%C2%B7%201%20year%20ago.
+* **gemma2:9b** – ID: `gemma2:9b` – not multimodal (text)https://ollama.com/library/gemma2#:~:text=gemma2%3A9b%20latest%205,Text%20%C2%B7%201%20year%20ago.
+* **gemma2:27b** – ID: `gemma2:27b` – not multimodal (text)https://ollama.com/library/gemma2#:~:text=gemma2%3A27b%2016GB%20%C2%B7%208K%20context,Text%20%C2%B7%201%20year%20ago.
+* **gemma2:latest** – ID: `gemma2:latest` – not multimodal (text)https://ollama.com/library/gemma2#:~:text=gemma2%3Alatest%205,Text%20%C2%B7%201%20year%20ago.
+
+---
+
+## Qwen 2.5 Coder – creator: **Qwen Team (Alibaba)**
+Qwen 2.5 Coder models are code‑specific versions of Qwen 2.5 that improve code generation and reasoninghttps://ollama.com/library/qwen2.5-coder#:~:text=6,ago.
+
+* **qwen2.5‑coder:0.5b** – ID: `qwen2.5-coder:0.5b` – not multimodal (text)https://ollama.com/library/qwen2.5-coder#:~:text=qwen2.5,Text%20%C2%B7%202%20months%20ago.
+* **qwen2.5‑coder:1.5b** – ID: `qwen2.5-coder:1.5b` – not multimodal (text)https://ollama.com/library/qwen2.5-coder#:~:text=qwen2.5,Text%20%C2%B7%202%20months%20ago.
+* **qwen2.5‑coder:3b** – ID: `qwen2.5-coder:3b` – not multimodal (text)https://ollama.com/library/qwen2.5-coder#:~:text=qwen2.5,Text%20%C2%B7%202%20months%20ago.
+* **qwen2.5‑coder:7b** – ID: `qwen2.5-coder:7b` – not multimodal (text)https://ollama.com/library/qwen2.5-coder#:~:text=qwen2.5,Text%20%C2%B7%202%20months%20ago.
+* **qwen2.5‑coder:14b** – ID: `qwen2.5-coder:14b` – not multimodal (text)https://ollama.com/library/qwen2.5-coder#:~:text=qwen2.5,Text%20%C2%B7%202%20months%20ago.
+* **qwen2.5‑coder:32b** – ID: `qwen2.5-coder:32b` – not multimodal (text)https://ollama.com/library/qwen2.5-coder#:~:text=qwen2.5,Text%20%C2%B7%202%20months%20ago.
+* **qwen2.5‑coder:latest** – ID: `qwen2.5-coder:latest` – not multimodal (text)https://ollama.com/library/qwen2.5-coder#:~:text=qwen2.5,Text%20%C2%B7%202%20months%20ago.
+
+---
+
+## Phi‑4 – creator: **Microsoft**
+Phi‑4 is a 14B parameter model released by Microsofthttps://ollama.com/library/phi4#:~:text=Phi,art%20open%20model%20from%20Microsoft.
+
+* **phi4:14b** – ID: `phi4:14b` – not multimodal (text)https://ollama.com/library/phi4#:~:text=phi4%3A14b%20latest%209,Text%20%C2%B7%207%20months%20ago.
+* **phi4:latest** – ID: `phi4:latest` – not multimodal (text)https://ollama.com/library/phi4#:~:text=phi4%3Alatest%209,Text%20%C2%B7%207%20months%20ago.
+
+---
+
+## Code Llama – creator: **Meta**
+Code Llama (codellama) is a code‑generation model built on top of Llama 2https://ollama.com/library/codellama#:~:text=Code%20Llama%20is%20a%20model,Bash%20and%20more.
+
+* **codellama:7b** – ID: `codellama:7b` – not multimodal (text/code)https://ollama.com/library/codellama#:~:text=codellama%3A7b%20latest%203,Text%20%C2%B7%201%20year%20ago.
+* **codellama:13b** – ID: `codellama:13b` – not multimodal (text/code)https://ollama.com/library/codellama#:~:text=codellama%3A13b%207,Text%20%C2%B7%201%20year%20ago.
+* **codellama:34b** – ID: `codellama:34b` – not multimodal (text/code)https://ollama.com/library/codellama#:~:text=codellama%3A34b%2019GB%20%C2%B7%2016K%20context,Text%20%C2%B7%201%20year%20ago.
+* **codellama:70b** – ID: `codellama:70b` – not multimodal (text/code)https://ollama.com/library/codellama#:~:text=codellama%3A70b%2039GB%20%C2%B7%202K%20context,Text%20%C2%B7%201%20year%20ago.
+* **codellama:latest** – ID: `codellama:latest` – not multimodal (text/code)https://ollama.com/library/codellama#:~:text=codellama%3Alatest%203,Text%20%C2%B7%201%20year%20ago.
+
+---
+
+## Gemma - creator: **Google**
+Gemma models are lightweight, state-of-the-art open models built by Google.
+
+* **gemma-2b** - ID: `google/gemma-2b:gguf` - not multimodal (text)
+* **gemma-7b** - ID: `google/gemma-7b:gguf` - not multimodal (text)

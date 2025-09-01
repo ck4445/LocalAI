@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30 Professional Finance Loading Animations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0e27;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-weight: 200;
+            font-size: 2.2em;
+            letter-spacing: 4px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 40px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            font-size: 0.85em;
+            text-transform: uppercase;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1px;
+        }
+
+        .loader-card {
+            background: #0a0e27;
+            padding: 40px;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .loader-card:hover {
+            background: #0f1329;
+        }
+
+        .loader-title {
+            margin-top: 25px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.4);
+            text-align: center;
+            font-weight: 400;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .loader-wrapper {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* 1. Market Pulse */
+        .market-pulse {
+            width: 60px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .market-pulse::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 100%;
+            background: #00d4ff;
+            animation: marketPulse 1.5s linear infinite;
+        }
+        @keyframes marketPulse {
+            from { left: -20px; }
+            to { left: 100%; }
+        }
+
+        /* 2. Value Stream */
+        .value-stream {
+            width: 50px;
+            height: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            position: relative;
+        }
+        .value-dot {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00d4ff;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: valueExpand 2s infinite;
+        }
+        @keyframes valueExpand {
+            0%, 100% { 
+                width: 4px; 
+                height: 4px; 
+                opacity: 1; 
+            }
+            50% { 
+                width: 40px; 
+                height: 40px; 
+                opacity: 0.1; 
+            }
+        }
+
+        /* 3. Transaction Flow */
+        .transaction-flow {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .transaction-node {
+            width: 8px;
+            height: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            position: relative;
+        }
+        .transaction-node::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: #00d4ff;
+            border-radius: 50%;
+            opacity: 0;
+            animation: transactionFlow 2s infinite;
+        }
+        .transaction-node:nth-child(1)::after { animation-delay: 0s; }
+        .transaction-node:nth-child(2)::after { animation-delay: 0.4s; }
+        .transaction-node:nth-child(3)::after { animation-delay: 0.8s; }
+        @keyframes transactionFlow {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        /* 4. Portfolio Balance */
+        .portfolio-balance {
+            width: 60px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+        .balance-indicator {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00d4ff;
+            border-radius: 50%;
+            top: -1.5px;
+            animation: balanceSlide 3s infinite ease-in-out;
+        }
+        @keyframes balanceSlide {
+            0%, 100% { left: 0; }
+            50% { left: calc(100% - 4px); }
+        }
+
+        /* 5. Yield Curve */
+        .yield-curve {
+            width: 60px;
+            height: 40px;
+            position: relative;
+        }
+        .yield-line {
+            stroke: #00d4ff;
+            stroke-width: 1;
+            fill: none;
+            opacity: 0.5;
+            stroke-dasharray: 100;
+            animation: yieldDraw 3s infinite;
+        }
+        @keyframes yieldDraw {
+            from { stroke-dashoffset: 100; }
+            to { stroke-dashoffset: 0; }
+        }
+
+        /* 6. Liquidity Pool */
+        .liquidity-pool {
+            width: 50px;
+            height: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+        .liquidity-fill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 0;
+            background: linear-gradient(180deg, rgba(0, 212, 255, 0.3), rgba(0, 212, 255, 0.1));
+            animation: liquidityFill 2.5s infinite ease-in-out;
+        }
+        @keyframes liquidityFill {
+            0%, 100% { height: 20%; }
+            50% { height: 80%; }
+        }
+
+        /* 7. Exchange Rate */
+        .exchange-rate {
+            font-family: 'SF Mono', monospace;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            position: relative;
+        }
+        .rate-value {
+            animation: rateUpdate 2s infinite;
+        }
+        @keyframes rateUpdate {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; color: #00d4ff; }
+        }
+
+        /* 8. Asset Allocation */
+        .asset-allocation {
+            width: 60px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            overflow: hidden;
+        }
+        .asset-segment {
+            height: 100%;
+            animation: segmentGrow 2s infinite ease-in-out;
+        }
+        .asset-segment:nth-child(1) { 
+            background: #00d4ff; 
+            flex: 1;
+        }
+        .asset-segment:nth-child(2) { 
+            background: #0099cc; 
+            flex: 1.5;
+            animation-delay: 0.2s;
+        }
+        .asset-segment:nth-child(3) { 
+            background: #006699; 
+            flex: 1;
+            animation-delay: 0.4s;
+        }
+        @keyframes segmentGrow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* 9. Risk Matrix */
+        .risk-matrix {
+            display: grid;
+            grid-template-columns: repeat(3, 12px);
+            grid-template-rows: repeat(3, 12px);
+            gap: 4px;
+        }
+        .risk-cell {
+            background: rgba(255, 255, 255, 0.05);
+            animation: riskScan 3s infinite;
+        }
+        .risk-cell:nth-child(1) { animation-delay: 0s; }
+        .risk-cell:nth-child(2) { animation-delay: 0.1s; }
+        .risk-cell:nth-child(3) { animation-delay: 0.2s; }
+        .risk-cell:nth-child(4) { animation-delay: 0.3s; }
+        .risk-cell:nth-child(5) { animation-delay: 0.4s; }
+        .risk-cell:nth-child(6) { animation-delay: 0.5s; }
+        .risk-cell:nth-child(7) { animation-delay: 0.6s; }
+        .risk-cell:nth-child(8) { animation-delay: 0.7s; }
+        .risk-cell:nth-child(9) { animation-delay: 0.8s; }
+        @keyframes riskScan {
+            0%, 100% { background: rgba(255, 255, 255, 0.05); }
+            50% { background: rgba(0, 212, 255, 0.3); }
+        }
+
+        /* 10. Capital Flow */
+        .capital-flow {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+        .capital-ring {
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        .capital-ring::before {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00d4ff;
+            border-radius: 50%;
+            top: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: capitalRotate 2s linear infinite;
+        }
+        @keyframes capitalRotate {
+            from { transform: translateX(-50%) rotate(0deg) translateX(30px) rotate(0deg); }
+            to { transform: translateX(-50%) rotate(360deg) translateX(30px) rotate(-360deg); }
+        }
+
+        /* 11. Equity Meter */
+        .equity-meter {
+            width: 50px;
+            height: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px 25px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .equity-needle {
+            position: absolute;
+            width: 1px;
+            height: 25px;
+            background: #00d4ff;
+            bottom: 0;
+            left: 50%;
+            transform-origin: bottom;
+            animation: equitySwing 3s infinite ease-in-out;
+        }
+        @keyframes equitySwing {
+            0%, 100% { transform: rotate(-45deg); }
+            50% { transform: rotate(45deg); }
+        }
+
+        /* 12. Revenue Stream */
+        .revenue-stream {
+            width: 60px;
+            height: 30px;
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+        }
+        .revenue-bar {
+            flex: 1;
+            background: rgba(0, 212, 255, 0.5);
+            animation: revenueFlow 1.5s infinite ease-in-out;
+        }
+        .revenue-bar:nth-child(1) { height: 10px; animation-delay: 0s; }
+        .revenue-bar:nth-child(2) { height: 20px; animation-delay: 0.1s; }
+        .revenue-bar:nth-child(3) { height: 15px; animation-delay: 0.2s; }
+        .revenue-bar:nth-child(4) { height: 25px; animation-delay: 0.3s; }
+        .revenue-bar:nth-child(5) { height: 18px; animation-delay: 0.4s; }
+        @keyframes revenueFlow {
+            0%, 100% { opacity: 0.3; transform: scaleY(0.8); }
+            50% { opacity: 1; transform: scaleY(1); }
+        }
+
+        /* 13. Bond Duration */
+        .bond-duration {
+            width: 60px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        .duration-marker {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border: 1px solid #00d4ff;
+            border-radius: 50%;
+            top: -5px;
+            animation: durationSlide 3s infinite ease-in-out;
+        }
+        @keyframes durationSlide {
+            0%, 100% { left: 0; }
+            50% { left: calc(100% - 12px); }
+        }
+
+        /* 14. Credit Score */
+        .credit-score {
+            width: 50px;
+            height: 50px;
+            position: relative;
+        }
+        .score-arc {
+            width: 100%;
+            height: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+        }
+        .score-fill {
+            position: absolute;
+            inset: -1px;
+            border: 2px solid #00d4ff;
+            border-radius: 50%;
+            border-bottom-color: transparent;
+            border-left-color: transparent;
+            animation: scoreRotate 2s linear infinite;
+        }
+        @keyframes scoreRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 15. Dividend Flow */
+        .dividend-flow {
+            width: 60px;
+            height: 40px;
+            position: relative;
+        }
+        .dividend-dot {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #00d4ff;
+            border-radius: 50%;
+            animation: dividendPath 2s infinite linear;
+        }
+        .dividend-dot:nth-child(1) { animation-delay: 0s; }
+        .dividend-dot:nth-child(2) { animation-delay: 0.5s; }
+        .dividend-dot:nth-child(3) { animation-delay: 1s; }
+        .dividend-dot:nth-child(4) { animation-delay: 1.5s; }
+        @keyframes dividendPath {
+            0% { top: 0; left: 0; opacity: 0; }
+            25% { opacity: 1; }
+            75% { opacity: 1; }
+            100% { top: 40px; left: 60px; opacity: 0; }
+        }
+
+        /* 16. Market Depth */
+        .market-depth {
+            width: 60px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+        .depth-level {
+            width: 2px;
+            background: #00d4ff;
+            opacity: 0.5;
+            animation: depthPulse 2s infinite ease-in-out;
+        }
+        .depth-level:nth-child(1) { height: 10px; animation-delay: 0s; }
+        .depth-level:nth-child(2) { height: 20px; animation-delay: 0.1s; }
+        .depth-level:nth-child(3) { height: 30px; animation-delay: 0.2s; }
+        .depth-level:nth-child(4) { height: 20px; animation-delay: 0.3s; }
+        .depth-level:nth-child(5) { height: 10px; animation-delay: 0.4s; }
+        @keyframes depthPulse {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* 17. Options Greeks */
+        .options-greeks {
+            font-family: 'SF Mono', monospace;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.3);
+            display: flex;
+            gap: 8px;
+        }
+        .greek-symbol {
+            animation: greekFade 2s infinite;
+        }
+        .greek-symbol:nth-child(1) { animation-delay: 0s; }
+        .greek-symbol:nth-child(2) { animation-delay: 0.5s; }
+        .greek-symbol:nth-child(3) { animation-delay: 1s; }
+        @keyframes greekFade {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; color: #00d4ff; }
+        }
+
+        /* 18. Volatility Index */
+        .volatility-index {
+            width: 60px;
+            height: 30px;
+            position: relative;
+        }
+        .vix-line {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .vix-spike {
+            position: absolute;
+            bottom: 0;
+            width: 2px;
+            background: #00d4ff;
+            animation: vixSpike 2s infinite;
+        }
+        .vix-spike:nth-child(2) { left: 20%; animation-delay: 0.4s; }
+        .vix-spike:nth-child(3) { left: 40%; animation-delay: 0.8s; }
+        .vix-spike:nth-child(4) { left: 60%; animation-delay: 1.2s; }
+        .vix-spike:nth-child(5) { left: 80%; animation-delay: 1.6s; }
+        @keyframes vixSpike {
+            0%, 100% { height: 2px; }
+            50% { height: 25px; }
+        }
+
+        /* 19. Trade Execution */
+        .trade-execution {
+            width: 60px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        .execution-line {
+            position: absolute;
+            height: 1px;
+            background: #00d4ff;
+            animation: executeTrade 2s infinite;
+        }
+        .execution-line:nth-child(2) { top: 33%; animation-delay: 0s; }
+        .execution-line:nth-child(3) { top: 66%; animation-delay: 0.6s; }
+        @keyframes executeTrade {
+            0% { width: 0; left: 0; opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { width: 100%; left: 0; opacity: 0; }
+        }
+
+        /* 20. Alpha Generation */
+        .alpha-generation {
+            font-family: 'SF Mono', monospace;
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.3);
+            position: relative;
+        }
+        .alpha-symbol {
+            animation: alphaGlow 2s infinite;
+        }
+        @keyframes alphaGlow {
+            0%, 100% { opacity: 0.3; text-shadow: none; }
+            50% { opacity: 1; text-shadow: 0 0 10px #00d4ff; color: #00d4ff; }
+        }
+
+        /* 21. Basis Points */
+        .basis-points {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+        .bp-value {
+            font-family: 'SF Mono', monospace;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.5);
+            animation: bpCount 2s infinite;
+        }
+        .bp-unit {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.3);
+        }
+        @keyframes bpCount {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; color: #00d4ff; }
+        }
+
+        /* 22. Sharpe Ratio */
+        .sharpe-ratio {
+            width: 50px;
+            height: 50px;
+            position: relative;
+        }
+        .sharpe-circle {
+            width: 100%;
+            height: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            position: relative;
+        }
+        .sharpe-indicator {
+            position: absolute;
+            inset: 10px;
+            border: 1px solid #00d4ff;
+            border-radius: 50%;
+            animation: sharpePulse 2s infinite;
+        }
+        @keyframes sharpePulse {
+            0%, 100% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1); opacity: 1; }
+        }
+
+        /* 23. Beta Coefficient */
+        .beta-coefficient {
+            width: 60px;
+            height: 40px;
+            position: relative;
+        }
+        .beta-line {
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            top: 50%;
+        }
+        .beta-dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #00d4ff;
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: betaMove 3s infinite ease-in-out;
+        }
+        @keyframes betaMove {
+            0%, 100% { left: 10%; }
+            50% { left: 80%; }
+        }
+
+        /* 24. Correlation Matrix */
+        .correlation-matrix {
+            display: grid;
+            grid-template-columns: repeat(4, 8px);
+            grid-template-rows: repeat(4, 8px);
+            gap: 3px;
+        }
+        .correlation-cell {
+            background: rgba(0, 212, 255, 0.1);
+            animation: correlate 3s infinite;
+        }
+        .correlation-cell:nth-child(1),
+        .correlation-cell:nth-child(6),
+        .correlation-cell:nth-child(11),
+        .correlation-cell:nth-child(16) {
+            background: rgba(0, 212, 255, 0.5);
+            animation: none;
+        }
+        @keyframes correlate {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* 25. Limit Order */
+        .limit-order {
+            width: 60px;
+            height: 40px;
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+        .order-marker {
+            position: absolute;
+            width: 8px;
+            height: 1px;
+            background: #00d4ff;
+            right: 0;
+            animation: orderPlace 2s infinite;
+        }
+        .order-marker:nth-child(2) { top: 30%; animation-delay: 0s; }
+        .order-marker:nth-child(3) { top: 50%; animation-delay: 0.5s; }
+        .order-marker:nth-child(4) { top: 70%; animation-delay: 1s; }
+        @keyframes orderPlace {
+            0% { right: -10px; opacity: 0; }
+            50% { right: 0; opacity: 1; }
+            100% { right: -10px; opacity: 0; }
+        }
+
+        /* 26. Spread Indicator */
+        .spread-indicator {
+            width: 60px;
+            height: 20px;
+            position: relative;
+        }
+        .bid-line {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 1px;
+            background: rgba(0, 212, 255, 0.5);
+        }
+        .ask-line {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 1px;
+            background: rgba(0, 212, 255, 0.5);
+        }
+        .spread-gap {
+            position: absolute;
+            width: 100%;
+            top: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(0, 212, 255, 0.1), transparent, rgba(0, 212, 255, 0.1));
+            animation: spreadPulse 2s infinite;
+        }
+        @keyframes spreadPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* 27. VWAP Tracker */
+        .vwap-tracker {
+            width: 60px;
+            height: 40px;
+            position: relative;
+        }
+        .vwap-baseline {
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            top: 50%;
+        }
+        .vwap-point {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #00d4ff;
+            border-radius: 50%;
+            animation: vwapTrack 3s infinite linear;
+        }
+        @keyframes vwapTrack {
+            0% { left: 0; top: 50%; }
+            25% { left: 25%; top: 30%; }
+            50% { left: 50%; top: 60%; }
+            75% { left: 75%; top: 40%; }
+            100% { left: 100%; top: 50%; }
+        }
+
+        /* 28. Futures Chain */
+        .futures-chain {
+            display: flex;
+            gap: 8px;
+        }
+        .futures-month {
+            width: 4px;
+            height: 30px;
+            background: rgba(0, 212, 255, 0.3);
+            animation: futuresUpdate 2s infinite;
+        }
+        .futures-month:nth-child(1) { animation-delay: 0s; }
+        .futures-month:nth-child(2) { animation-delay: 0.2s; }
+        .futures-month:nth-child(3) { animation-delay: 0.4s; }
+        .futures-month:nth-child(4) { animation-delay: 0.6s; }
+        @keyframes futuresUpdate {
+            0%, 100% { opacity: 0.3; transform: scaleY(0.7); }
+            50% { opacity: 1; transform: scaleY(1); }
+        }
+
+        /* 29. Settlement Process */
+        .settlement-process {
+            width: 60px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .settlement-progress {
+            position: absolute;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+            animation: settlementFlow 2s infinite linear;
+        }
+        @keyframes settlementFlow {
+            from { left: -60px; width: 60px; }
+            to { left: 100%; width: 60px; }
+        }
+
+        /* 30. Order Book */
+        .order-book {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            gap: 2px;
+        }
+        .book-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .book-level {
+            height: 10px;
+            animation: bookUpdate 2s infinite;
+        }
+        .bid-side .book-level { 
+            background: rgba(0, 212, 255, 0.5); 
+        }
+        .ask-side .book-level { 
+            background: rgba(0, 212, 255, 0.3); 
+        }
+        .book-level:nth-child(1) { animation-delay: 0s; }
+        .book-level:nth-child(2) { animation-delay: 0.2s; }
+        .book-level:nth-child(3) { animation-delay: 0.4s; }
+        .book-level:nth-child(4) { animation-delay: 0.6s; }
+        .book-level:nth-child(5) { animation-delay: 0.8s; }
+        @keyframes bookUpdate {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PROFESSIONAL FINANCE</h1>
+        <p class="subtitle">Institutional Grade Loading Animations</p>
+        
+        <div class="grid">
+            <!-- 1. Market Pulse -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="market-pulse"></div>
+                </div>
+                <div class="loader-title">Market Pulse</div>
+            </div>
+
+            <!-- 2. Value Stream -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="value-stream">
+                        <div class="value-dot"></div>
+                    </div>
+                </div>
+                <div class="loader-title">Value Stream</div>
+            </div>
+
+            <!-- 3. Transaction Flow -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="transaction-flow">
+                        <div class="transaction-node"></div>
+                        <div class="transaction-node"></div>
+                        <div class="transaction-node"></div>
+                    </div>
+                </div>
+                <div class="loader-title">Transaction Flow</div>
+            </div>
+
+            <!-- 4. Portfolio Balance -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="portfolio-balance">
+                        <div class="balance-indicator"></div>
+                    </div>
+                </div>
+                <div class="loader-title">Portfolio Balance</div>
+            </div>
+
+            <!-- 5. Yield Curve -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="yield-curve">
+                        <svg width="60" height="40">
+                            <path class="yield-line" d="M0,35 Q15,30 30,20 T60,10"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="loader-title">Yield Curve</div>
+            </div>
+
+            <!-- 6. Liquidity Pool -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="liquidity-pool">
+                        <div class="liquidity-fill"></div>
+                    </div>
+                </div>
+                <div class="loader-title">Liquidity Pool</div>
+            </div>
+
+            <!-- 7. Exchange Rate -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="exchange-rate">
+                        <span class="rate-value">1.0854</span>
+                    </div>
+                </div>
+                <div class="loader-title">Exchange Rate</div>
+            </div>
+
+            <!-- 8. Asset Allocation -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="asset-allocation">
+                        <div class="asset-segment"></div>
+                        <div class="asset-segment"></div>
+                        <div class="asset-segment"></div>
+                    </div>
+                </div>
+                <div class="loader-title">Asset Allocation</div>
+            </div>
+
+            <!-- 9. Risk Matrix -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="risk-matrix">
+                        <div class="risk-cell"></div>
+                        <div class="risk-cell"></div>
+                        <div class="risk-cell"></div>
+                        <div class="risk-cell"></div>
+                        <div class="risk-cell"></div>
+                        <div class="risk-cell"></div>
+                        <div class="risk-cell"></div>
+                        <div class="risk-cell"></div>
+                        <div class="risk-cell"></div>
+                    </div>
+                </div>
+                <div class="loader-title">Risk Matrix</div>
+            </div>
+
+            <!-- 10. Capital Flow -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="capital-flow">
+                        <div class="capital-ring"></div>
+                    </div>
+                </div>
+                <div class="loader-title">Capital Flow</div>
+            </div>
+
+            <!-- 11. Equity Meter -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="equity-meter">
+                        <div class="equity-needle"></div>
+                    </div>
+                </div>
+                <div class="loader-title">Equity Meter</div>
+            </div>
+
+            <!-- 12. Revenue Stream -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="revenue-stream">
+                        <div class="revenue-bar"></div>
+                        <div class="revenue-bar"></div>
+                        <div class="revenue-bar"></div>
+                        <div class="revenue-bar"></div>
+                        <div class="revenue-bar"></div>
+                    </div>
+                </div>
+                <div class="loader-title">Revenue Stream</div>
+            </div>
+
+            <!-- 13. Bond Duration -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="bond-duration">
+                        <div class="duration-marker"></div>
+                    </div>
+                </div>
+                <div class="loader-title">Bond Duration</div>
+            </div>
+
+            <!-- 14. Credit Score -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="credit-score">
+                        <div class="score-arc">
+                            <div class="score-fill"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="loader-title">Credit Score</div>
+            </div>
+
+            <!-- 15. Dividend Flow -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="dividend-flow">
+                        <div class="dividend-dot"></div>
+                        <div class="dividend-dot"></div>
+                        <div class="dividend-dot"></div>
+                        <div class="dividend-dot"></div>
+                    </div>
+                </div>
+                <div class="loader-title">Dividend Flow</div>
+            </div>
+
+            <!-- 16. Market Depth -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="market-depth">
+                        <div class="depth-level"></div>
+                        <div class="depth-level"></div>
+                        <div class="depth-level"></div>
+                        <div class="depth-level"></div>
+                        <div class="depth-level"></div>
+                    </div>
+                </div>
+                <div class="loader-title">Market Depth</div>
+            </div>
+
+            <!-- 17. Options Greeks -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="options-greeks">
+                        <span class="greek-symbol">Δ</span>
+                        <span class="greek-symbol">Γ</span>
+                        <span class="greek-symbol">Θ</span>
+                    </div>
+                </div>
+                <div class="loader-title">Options Greeks</div>
+            </div>
+
+            <!-- 18. Volatility Index -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="volatility-index">
+                        <div class="vix-line"></div>
+                        <div class="vix-spike"></div>
+                        <div class="vix-spike"></div>
+                        <div class="vix-spike"></div>
+                        <div class="vix-spike"></div>
+                    </div>
+                </div>
+                <div class="loader-title">Volatility Index</div>
+            </div>
+
+            <!-- 19. Trade Execution -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="trade-execution">
+                        <div class="execution-line"></div>
+                        <div class="execution-line"></div>
+                    </div>
+                </div>
+                <div class="loader-title">Trade Execution</div>
+            </div>
+
+            <!-- 20. Alpha Generation -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="alpha-generation">
+                        <span class="alpha-symbol">α</span>
+                    </div>
+                </div>
+                <div class="loader-title">Alpha Generation</div>
+            </div>
+
+            <!-- 21. Basis Points -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="basis-points">
+                        <span class="bp-value">25</span>
+                        <span class="bp-unit">bps</span>
+                    </div>
+                </div>
+                <div class="loader-title">Basis Points</div>
+            </div>
+
+            <!-- 22. Sharpe Ratio -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="sharpe-ratio">
+                        <div class="sharpe-circle">
+                            <div class="sharpe-indicator"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="loader-title">Sharpe Ratio</div>
+            </div>
+
+            <!-- 23. Beta Coefficient -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="beta-coefficient">
+                        <div class="beta-line"></div>
+                        <div class="beta-dot"></div>
+                    </div>
+                </div>
+                <div class="loader-title">Beta Coefficient</div>
+            </div>
+
+            <!-- 24. Correlation Matrix -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="correlation-matrix">
+                        <div class="correlation-cell"></div>
+                        <div class="correlation-cell"></div>
+                        <div class="correlation-cell"></div>
+                        <div class="correlation-cell"></div>
+                        <div class="correlation-cell"></div>
+                        <div class="correlation-cell"></div>
+                        <div class="correlation-cell"></div>
+                        <div class="correlation-cell"></div>
+                        <div class="correlation-cell"></div>
+                        <div class="correlation-cell"></div>
+                        <div class="correlation-cell"></div>
+                        <div class="correlation-cell"></div>
+                        <div class="correlation-cell"></div>
+                        <div class="correlation-cell"></div>
+                        <div class="correlation-cell"></div>
+                        <div class="correlation-cell"></div>
+                    </div>
+                </div>
+                <div class="loader-title">Correlation Matrix</div>
+            </div>
+
+            <!-- 25. Limit Order -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="limit-order">
+                        <div class="order-marker"></div>
+                        <div class="order-marker"></div>
+                        <div class="order-marker"></div>
+                    </div>
+                </div>
+                <div class="loader-title">Limit Order</div>
+            </div>
+
+            <!-- 26. Spread Indicator -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="spread-indicator">
+                        <div class="bid-line"></div>
+                        <div class="ask-line"></div>
+                        <div class="spread-gap"></div>
+                    </div>
+                </div>
+                <div class="loader-title">Bid-Ask Spread</div>
+            </div>
+
+            <!-- 27. VWAP Tracker -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="vwap-tracker">
+                        <div class="vwap-baseline"></div>
+                        <div class="vwap-point"></div>
+                    </div>
+                </div>
+                <div class="loader-title">VWAP Tracker</div>
+            </div>
+
+            <!-- 28. Futures Chain -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="futures-chain">
+                        <div class="futures-month"></div>
+                        <div class="futures-month"></div>
+                        <div class="futures-month"></div>
+                        <div class="futures-month"></div>
+                    </div>
+                </div>
+                <div class="loader-title">Futures Chain</div>
+            </div>
+
+            <!-- 29. Settlement Process -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="settlement-process">
+                        <div class="settlement-progress"></div>
+                    </div>
+                </div>
+                <div class="loader-title">T+2 Settlement</div>
+            </div>
+
+            <!-- 30. Order Book -->
+            <div class="loader-card">
+                <div class="loader-wrapper">
+                    <div class="order-book">
+                        <div class="book-side bid-side">
+                            <div class="book-level"></div>
+                            <div class="book-level"></div>
+                            <div class="book-level"></div>
+                            <div class="book-level"></div>
+                            <div class="book-level"></div>
+                        </div>
+                        <div class="book-side ask-side">
+                            <div class="book-level"></div>
+                            <div class="book-level"></div>
+                            <div class="book-level"></div>
+                            <div class="book-level"></div>
+                            <div class="book-level"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="loader-title">Order Book</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
